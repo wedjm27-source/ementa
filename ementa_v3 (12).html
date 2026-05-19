@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="A Nossa Ementa">
+<meta name="theme-color" content="#C2692A">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Nossa Ementa</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#F7F4EE; --warm:#FDFBF7; --ink:#1C1917; --ink2:#44403C; --ink3:#78716C;
+  --acc:#C2692A; --acc-l:#F5E6D8; --acc-d:#8B4513;
+  --grn:#4A7C59; --grn-l:#E0EDE4;
+  --amb:#D4860B; --amb-l:#FDF3DC;
+  --red:#B83232; --red-l:#FBEBEB;
+  --blu:#2C5F8A; --blu-l:#E4EEF7;
+  --pur:#6B3FA0; --pur-l:#F0EAF8;
+  --brd:rgba(28,25,23,.1); --brd2:rgba(28,25,23,.18);
+  --r:12px; --rs:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font-family:'DM Sans',sans-serif;cursor:pointer}
+input,select,textarea{font-family:'DM Sans',sans-serif}
+
+/* NAV */
+nav{background:var(--warm);border-bottom:1px solid var(--brd);position:sticky;top:0;z-index:100;
+  padding:0 1.5rem;display:flex;align-items:center;height:54px;gap:8px}
+.logo{font-family:'Fraunces',serif;font-size:19px;font-weight:700;color:var(--acc);margin-right:auto;white-space:nowrap}
+.nav-tab{padding:5px 13px;border-radius:var(--rs);border:none;background:none;
+  font-size:13px;color:var(--ink3);transition:all .15s}
+.nav-tab.active{background:var(--acc-l);color:var(--acc-d);font-weight:500}
+.nav-tab:hover:not(.active){background:var(--cream);color:var(--ink)}
+
+/* VIEWS */
+.view{display:none;padding:1.5rem;max-width:1280px;margin:0 auto}
+.view.active{display:block}
+
+/* ===== RECIPES ===== */
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap}
+.sbox{flex:1;min-width:180px;padding:8px 12px;border-radius:var(--rs);
+  border:1px solid var(--brd2);background:var(--warm);font-size:13px;color:var(--ink);outline:none}
+.sbox:focus{border-color:var(--acc)}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{padding:4px 11px;border-radius:20px;border:1px solid var(--brd2);
+  background:var(--warm);font-size:12px;color:var(--ink3);transition:all .15s;white-space:nowrap}
+.chip.active{background:var(--acc);color:#fff;border-color:var(--acc)}
+.chip:hover:not(.active){border-color:var(--acc);color:var(--acc)}
+.cat-section{margin-bottom:2rem}
+.cat-title{font-family:'Fraunces',serif;font-size:20px;font-weight:500;margin-bottom:.75rem;display:flex;align-items:center;gap:8px}
+.cat-n{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink3);font-weight:400}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+
+/* CARD */
+.rcard{background:var(--warm);border:1px solid var(--brd);border-radius:var(--r);
+  padding:.9rem 1rem;cursor:pointer;transition:all .2s;position:relative}
+.rcard:hover{border-color:var(--acc);transform:translateY(-2px);
+  box-shadow:0 6px 20px rgba(194,105,42,.1)}
+.rcard-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:6px}
+.rname{font-size:13px;font-weight:500;line-height:1.4;flex:1}
+.favbtn{background:none;border:none;font-size:15px;padding:0;line-height:1;flex-shrink:0;transition:transform .15s}
+.favbtn:hover{transform:scale(1.2)}
+.rlabels{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.lbl{font-size:10px;padding:2px 6px;border-radius:20px;font-weight:500;white-space:nowrap}
+.lbl-r{background:var(--grn-l);color:var(--grn)}
+.lbl-d{background:var(--blu-l);color:var(--blu)}
+.lbl-v{background:#E8F5E0;color:#3A6B2A}
+.lbl-c{background:var(--red-l);color:var(--red)}
+.lbl-p{background:var(--amb-l);color:var(--amb)}
+.lbl-s{background:var(--pur-l);color:var(--pur)}
+.lbl-sl{background:#EAF8EC;color:#2A6B3A}
+.lbl-o{background:var(--cream);color:var(--ink3)}
+.rmeta{display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.rmi{font-size:11px;color:var(--ink3);display:flex;align-items:center;gap:2px}
+.hbar{display:flex;gap:2px}
+.hdot{width:7px;height:7px;border-radius:50%;background:var(--brd2)}
+.hdot.on{background:var(--grn)}
+.stars{display:flex;gap:1px}
+.star{font-size:12px;cursor:pointer;transition:transform .1s;line-height:1}
+.star:hover{transform:scale(1.2)}
+.dual-rating{display:flex;gap:10px;margin-bottom:7px}
+.dr-row{display:flex;align-items:center;gap:4px}
+.dr-label{font-size:10px;color:var(--ink3);font-weight:500;min-width:34px}
+.add-btn{width:100%;padding:5px;background:var(--acc-l);border:none;border-radius:var(--rs);
+  font-size:11px;color:var(--acc-d);font-weight:500;transition:background .15s}
+.add-btn:hover{background:var(--acc);color:#fff}
+
+/* HEX radar */
+.hex-wrap{display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(28,25,23,.55);
+  display:none;align-items:center;justify-content:center;padding:1rem}
+.overlay.open{display:flex}
+.modal{background:var(--warm);border-radius:16px;width:100%;max-width:620px;
+  max-height:92vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.22);position:relative}
+.mhead{padding:1.25rem 1.5rem 1rem;border-bottom:1px solid var(--brd);
+  position:sticky;top:0;background:var(--warm);z-index:1}
+.mtitle{font-family:'Fraunces',serif;font-size:21px;font-weight:500;margin-bottom:6px}
+.mclose{position:absolute;top:.9rem;right:.9rem;background:var(--cream);border:none;
+  width:26px;height:26px;border-radius:50%;font-size:15px;display:flex;align-items:center;justify-content:center}
+.mbody{padding:1.25rem 1.5rem}
+.msec{margin-bottom:1.1rem}
+.msec-t{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);
+  font-weight:500;margin-bottom:7px}
+.nutri-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.nc{background:var(--cream);border-radius:var(--rs);padding:7px;text-align:center}
+.nv{font-size:17px;font-weight:500}
+.nl{font-size:10px;color:var(--ink3)}
+.ing-list{display:flex;flex-direction:column;gap:3px}
+.ing-row{font-size:13px;padding:4px 0;border-bottom:1px solid var(--brd);
+  display:flex;justify-content:space-between}
+.ing-row:last-child{border-bottom:none}
+.rlink{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;
+  border-radius:var(--rs);background:var(--acc);color:#fff;font-size:13px;font-weight:500;
+  text-decoration:none;transition:background .15s}
+.rlink:hover{background:var(--acc-d)}
+.health-ind{display:flex;align-items:center;gap:8px;padding:9px 12px;
+  border-radius:var(--rs);background:var(--cream);margin-bottom:.9rem}
+.hbar-modal{flex:1;height:5px;background:var(--brd);border-radius:3px;overflow:hidden}
+.hfill{height:100%;border-radius:3px;transition:width .5s}
+.dose-row{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.dose-row label{font-size:13px;color:var(--ink3)}
+.dose-sel{padding:5px 8px;border-radius:var(--rs);border:1px solid var(--brd2);
+  background:var(--cream);font-size:13px}
+.modal-rating-row{display:flex;gap:16px;flex-wrap:wrap}
+.mdr{display:flex;align-items:center;gap:6px}
+.mdr label{font-size:13px;color:var(--ink3)}
+.mdr .stars .star{font-size:18px}
+
+/* RADAR SVG */
+.radar-wrap{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap}
+.radar-labels{font-size:12px;color:var(--ink2);display:flex;flex-direction:column;gap:5px}
+.rl-row{display:flex;align-items:center;gap:6px}
+.rl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* COMPARE */
+.compare-bar{background:var(--amb-l);border:1px solid var(--amb);border-radius:var(--rs);
+  padding:8px 12px;margin-bottom:1rem;font-size:13px;display:flex;align-items:center;
+  justify-content:space-between;gap:8px}
+.compare-bar button{background:none;border:none;font-size:13px;color:var(--acc-d);font-weight:500}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.compare-col{background:var(--cream);border-radius:var(--rs);padding:10px}
+.compare-col-title{font-size:12px;font-weight:500;margin-bottom:8px;color:var(--ink2)}
+
+/* ===== SUGESTOES ===== */
+.sug-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.sug-card{background:var(--warm);border:1px solid var(--brd);border-radius:var(--r);padding:1rem;cursor:pointer;transition:all .2s}
+.sug-card:hover{border-color:var(--acc);transform:translateY(-1px);box-shadow:0 4px 16px rgba(194,105,42,.1)}
+.sug-icon{font-size:28px;margin-bottom:8px}
+.sug-title{font-family:'Fraunces',serif;font-size:16px;font-weight:500;margin-bottom:6px}
+.sug-desc{font-size:12px;color:var(--ink3);margin-bottom:10px;line-height:1.5}
+.sug-pills{display:flex;flex-wrap:wrap;gap:5px}
+.sug-pill{font-size:11px;padding:3px 8px;border-radius:20px;background:var(--acc-l);color:var(--acc-d)}
+
+/* ===== PLANNER ===== */
+.planner-wrap{display:flex;gap:16px}
+.plan-sidebar{width:230px;flex-shrink:0;background:var(--warm);border:1px solid var(--brd);
+  border-radius:var(--r);padding:.9rem;position:sticky;top:70px;max-height:calc(100vh - 90px);
+  display:flex;flex-direction:column;gap:8px}
+.plan-sidebar-title{font-family:'Fraunces',serif;font-size:15px;color:var(--ink)}
+.psbox{width:100%;padding:6px 9px;border-radius:var(--rs);border:1px solid var(--brd2);
+  background:var(--cream);font-size:12px;color:var(--ink);outline:none}
+.psbox:focus{border-color:var(--acc)}
+.pslist{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:3px}
+.psr{padding:6px 8px;border-radius:var(--rs);border:1px solid var(--brd);background:var(--cream);
+  cursor:grab;font-size:11px;transition:all .15s;display:flex;align-items:center;gap:5px;user-select:none}
+.psr:hover{border-color:var(--acc);background:var(--acc-l)}
+.psr.dragging{opacity:.4}
+.dragh{color:var(--ink3);font-size:11px;flex-shrink:0}
+.plan-main{flex:1;min-width:0}
+.weeks-toggle{display:flex;gap:6px;margin-bottom:10px}
+.wbtn{padding:5px 14px;border-radius:var(--rs);border:1px solid var(--brd2);
+  background:var(--warm);font-size:12px;font-weight:500;color:var(--ink3);transition:all .15s}
+.wbtn.active{background:var(--acc);color:#fff;border-color:var(--acc)}
+.plan-actions{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.btn{padding:6px 13px;border-radius:var(--rs);border:1px solid var(--brd2);
+  background:var(--warm);font-size:12px;font-weight:500;color:var(--ink);transition:all .15s}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+.btn-p{background:var(--acc);color:#fff;border-color:var(--acc)}
+.btn-p:hover{background:var(--acc-d);border-color:var(--acc-d);color:#fff}
+.plan-table{width:100%;border-collapse:collapse}
+.plan-table th{background:var(--ink);color:#fff;font-size:11px;font-weight:500;
+  text-transform:uppercase;letter-spacing:.06em;padding:8px 10px;text-align:left}
+.plan-table td{padding:0;vertical-align:top;border:1px solid var(--brd);background:var(--warm)}
+.dcell{padding:8px 10px;font-weight:500;font-size:12px;background:var(--cream);
+  border-bottom:1px solid var(--brd);white-space:nowrap}
+.sun-row .dcell{background:var(--acc-l);color:var(--acc-d)}
+.dz{min-height:60px;padding:4px;display:flex;flex-direction:column;gap:3px;transition:background .15s}
+.dz.over{background:var(--acc-l)}
+.mpill{background:var(--cream);border:1px solid var(--brd);border-radius:var(--rs);
+  padding:4px 7px;font-size:10px;display:flex;align-items:center;gap:3px;justify-content:space-between}
+.mpill-special{background:var(--pur-l);border-color:var(--pur)}
+.mpill-avos{background:var(--blu-l);border-color:var(--blu)}
+.mpill-name{flex:1;line-height:1.3}
+.mpill-rm{background:none;border:none;color:var(--ink3);font-size:13px;padding:0;line-height:1;flex-shrink:0}
+.mpill-rm:hover{color:var(--red)}
+.dhint{font-size:10px;color:var(--ink3);padding:4px;text-align:center}
+.special-meals{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.smeal-btn{padding:4px 9px;border-radius:20px;border:1px solid var(--brd2);
+  background:var(--warm);font-size:11px;color:var(--ink3);transition:all .15s}
+.smeal-btn:hover{border-color:var(--pur);color:var(--pur);background:var(--pur-l)}
+
+/* ===== SHOPPING ===== */
+.shop-header-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;flex-wrap:wrap;gap:10px}
+.shop-title{font-family:'Fraunces',serif;font-size:26px;font-weight:500}
+.shop-actions{display:flex;gap:6px;flex-wrap:wrap}
+.shop-add-row{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
+.shop-add-input{flex:1;min-width:160px;padding:7px 11px;border-radius:var(--rs);
+  border:1px solid var(--brd2);background:var(--warm);font-size:13px;outline:none}
+.shop-add-input:focus{border-color:var(--acc)}
+.shop-add-cat{padding:7px 10px;border-radius:var(--rs);border:1px solid var(--brd2);
+  background:var(--warm);font-size:13px;color:var(--ink);outline:none}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.shop-cat{background:var(--warm);border:1px solid var(--brd);border-radius:var(--r);padding:.9rem}
+.shop-cat-hdr{font-size:12px;font-weight:500;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.shop-cat-label{display:flex;align-items:center;gap:5px}
+.shop-cat-num{font-size:10px;background:var(--acc-l);color:var(--acc-d);padding:1px 5px;border-radius:10px}
+.srow{display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:1px solid var(--brd)}
+.srow:last-child{border-bottom:none}
+.srow input[type=checkbox]{cursor:pointer;flex-shrink:0}
+.srow-name{font-size:12px;flex:1}
+.srow-name.done{text-decoration:line-through;color:var(--ink3)}
+.srow-del{background:none;border:none;color:var(--ink3);font-size:14px;padding:0;line-height:1;flex-shrink:0}
+.srow-del:hover{color:var(--red)}
+.shop-empty{font-size:13px;color:var(--ink3);text-align:center;padding:2rem;grid-column:1/-1}
+.progress-bar{height:3px;background:var(--brd);border-radius:2px;margin-bottom:1rem;overflow:hidden}
+.progress-fill{height:100%;background:var(--grn);border-radius:2px;transition:width .4s}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--ink);color:#fff;
+  padding:9px 15px;border-radius:var(--rs);font-size:12px;z-index:500;
+  transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* QUICK ADD OVERLAY */
+.qa-overlay{position:fixed;inset:0;z-index:150;background:rgba(28,25,23,.4);
+  display:none;align-items:center;justify-content:center}
+.qa-overlay.open{display:flex}
+.qa-modal{background:var(--warm);border-radius:var(--r);padding:1.25rem;width:300px;
+  box-shadow:0 12px 40px rgba(0,0,0,.2)}
+.qa-modal h3{font-family:'Fraunces',serif;font-size:17px;margin-bottom:1rem}
+.qa-modal select,.qa-modal select{width:100%;padding:7px 9px;border-radius:var(--rs);
+  border:1px solid var(--brd2);background:var(--cream);font-size:13px;color:var(--ink);
+  margin-bottom:8px;outline:none}
+.qa-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:.9rem}
+</style>
+</head>
+<body>
+
+<div id="fb-loading" style="position:fixed;inset:0;background:#FDFBF7;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+  <div style="font-family:Georgia,serif;font-size:24px;color:#C2692A">A Nossa Ementa</div>
+  <div style="font-size:13px;color:#78716C">A sincronizar...</div>
+</div>
+<div id="confirm-overlay" style="position:fixed;inset:0;z-index:600;background:rgba(28,25,23,.5);display:none;align-items:center;justify-content:center">
+  <div style="background:#FDFBF7;border-radius:14px;padding:1.4rem;width:280px">
+    <div id="confirm-msg" style="font-size:14px;color:#1C1917;margin-bottom:1.1rem;line-height:1.5"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button onclick="confirmResolve(false)" style="padding:7px 16px;border-radius:6px;border:1px solid rgba(28,25,23,.2);background:transparent;font-size:13px;cursor:pointer">Cancelar</button>
+      <button id="confirm-ok" onclick="confirmResolve(true)" style="padding:7px 16px;border-radius:6px;border:none;background:#B83232;color:#fff;font-size:13px;font-weight:500;cursor:pointer">Confirmar</button>
+    </div>
+  </div>
+</div>
+<nav>
+  <div class="logo">🍽 A Nossa Ementa</div>
+  <button class="nav-tab active" onclick="gotoView('recipes')">Receitas</button>
+  <button class="nav-tab" onclick="gotoView('sugestoes')">Situações</button>
+  <button class="nav-tab" onclick="gotoView('planner')">Planeador</button>
+  <button class="nav-tab" onclick="gotoView('shopping')">Compras</button>
+</nav>
+
+<!-- RECIPE MODAL -->
+<div class="overlay" id="rmodal" onclick="if(event.target===this)closeModal()">
+<div class="modal">
+  <div class="mhead">
+    <button class="mclose" onclick="closeModal()">✕</button>
+    <div class="mtitle" id="m-title"></div>
+    <div id="m-labels" style="display:flex;gap:5px;flex-wrap:wrap"></div>
+  </div>
+  <div class="mbody">
+    <div class="health-ind" id="m-health"></div>
+    <div class="msec">
+      <div class="msec-t">Classificação</div>
+      <div class="modal-rating-row">
+        <div class="mdr"><label>João</label><div class="stars" id="m-rj"></div></div>
+        <div class="mdr"><label>Marta</label><div class="stars" id="m-rm"></div></div>
+      </div>
+    </div>
+    <div class="msec">
+      <div class="msec-t">Perfil do prato</div>
+      <div class="radar-wrap" id="m-radar"></div>
+    </div>
+    <div id="compare-bar" class="compare-bar" style="display:none">
+      A comparar com: <strong id="cmp-name"></strong>
+      <button onclick="clearCompare()">✕ Fechar</button>
+    </div>
+    <div id="compare-grid" style="display:none" class="compare-grid"></div>
+    <div class="msec">
+      <div class="msec-t">Informação Nutricional (por dose)</div>
+      <div class="dose-row">
+        <label>Doses:</label>
+        <select class="dose-sel" id="m-doses" onchange="updateIngredients()">
+          <option value="2" selected>2</option>
+          <option value="4">4</option>
+          <option value="6">6</option>
+          <option value="8">8</option>
+        </select>
+        <span style="font-size:12px;color:var(--ink3)">(por pessoa: valores abaixo ÷ doses)</span>
+      </div>
+      <div class="nutri-grid" id="m-nutri"></div>
+    </div>
+    <div class="msec">
+      <div class="msec-t">Ingredientes <span id="m-dose-note" style="color:var(--ink3);font-size:11px"></span></div>
+      <div class="ing-list" id="m-ings"></div>
+    </div>
+    <div class="msec">
+      <div class="msec-t">Receita</div>
+      <div id="m-link"></div>
+    </div>
+    <button class="add-btn" style="margin-top:.5rem" onclick="openQA(currentModalId)">+ Adicionar ao planeador</button>
+  </div>
+</div>
+</div>
+
+<!-- QUICK ADD -->
+<div class="qa-overlay" id="qaoverlay">
+<div class="qa-modal">
+  <h3 id="qa-title">Adicionar ao Planeador</h3>
+  <label style="font-size:12px;display:block;margin-bottom:3px">Semana</label>
+  <select id="qa-week"><option value="0">Semana 1</option><option value="1">Semana 2</option></select>
+  <label style="font-size:12px;display:block;margin-bottom:3px">Dia</label>
+  <select id="qa-day"></select>
+  <label style="font-size:12px;display:block;margin-bottom:3px">Refeição</label>
+  <select id="qa-meal"><option value="lunch">Almoço</option><option value="dinner">Jantar</option></select>
+  <div class="qa-actions">
+    <button class="btn" onclick="closeQA()">Cancelar</button>
+    <button class="btn btn-p" onclick="confirmQA()">Adicionar</button>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ===== RECIPES VIEW ===== -->
+<div class="view active" id="view-recipes">
+  <div class="toolbar">
+    <input class="sbox" type="text" placeholder="🔍 Pesquisar receitas..." oninput="renderRecipes()" id="rsearch">
+    <div class="chips" id="filter-chips">
+      <button class="chip active" onclick="setFilter('all',this)">Todos</button>
+      <button class="chip" onclick="setFilter('Salada',this)">🥗 Saladas</button>
+      <button class="chip" onclick="setFilter('Pasta',this)">🍝 Pasta</button>
+      <button class="chip" onclick="setFilter('Peixe',this)">🐟 Peixe</button>
+      <button class="chip" onclick="setFilter('Carne',this)">🥩 Carne</button>
+      <button class="chip" onclick="setFilter('Veggie',this)">🥦 Veggie</button>
+      <button class="chip" onclick="setFilter('Sopa',this)">🍲 Sopas</button>
+      <button class="chip" onclick="setFilter('Outros',this)">🍳 Outros</button>
+      <button class="chip" onclick="setFilter('rapido',this)">⚡ Rápidos</button>
+      <button class="chip" onclick="setFilter('fav',this)">⭐ Favoritos</button>
+    </div>
+  </div>
+  <div id="rcontainer"></div>
+</div>
+
+<!-- ===== SUGESTÕES VIEW ===== -->
+<div class="view" id="view-sugestoes">
+  <div style="margin-bottom:1.25rem">
+    <div style="font-family:'Fraunces',serif;font-size:26px;font-weight:500;margin-bottom:4px">Sugestões por situação</div>
+    <div style="font-size:13px;color:var(--ink3)">Escolhe a situação e vê os pratos mais adequados</div>
+  </div>
+  <div class="sug-grid" id="sug-cats"></div>
+  <div id="sug-results" style="margin-top:1.5rem;display:none">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem">
+      <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:500" id="sug-res-title"></div>
+      <button class="btn" onclick="closeSugResults()">← Voltar</button>
+    </div>
+    <div class="rgrid" id="sug-res-grid"></div>
+  </div>
+</div>
+
+<!-- ===== PLANNER VIEW ===== -->
+<div class="view" id="view-planner">
+  <div class="planner-wrap">
+    <div class="plan-sidebar">
+      <div class="plan-sidebar-title">Receitas</div>
+      <input class="psbox" type="text" placeholder="Pesquisar..." oninput="renderSidebar()" id="psearch">
+      <div style="display:flex;gap:4px;flex-wrap:wrap">
+        <button class="chip" style="font-size:10px;padding:3px 8px" onclick="setSideFilter('all',this)">Todos</button>
+        <button class="chip" style="font-size:10px;padding:3px 8px" onclick="setSideFilter('rapido',this)">⚡</button>
+        <button class="chip" style="font-size:10px;padding:3px 8px" onclick="setSideFilter('Peixe',this)">🐟</button>
+        <button class="chip" style="font-size:10px;padding:3px 8px" onclick="setSideFilter('Carne',this)">🥩</button>
+        <button class="chip" style="font-size:10px;padding:3px 8px" onclick="setSideFilter('Pasta',this)">🍝</button>
+        <button class="chip" style="font-size:10px;padding:3px 8px" onclick="setSideFilter('Veggie',this)">🥦</button>
+      </div>
+      <div class="pslist" id="pslist"></div>
+      <div style="border-top:1px solid var(--brd);padding-top:8px">
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:5px;font-weight:500">Especiais</div>
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <button class="psr" style="cursor:pointer" onclick="addSpecial('fora')">🍴 Almoço/Jantar fora</button>
+          <button class="psr" style="cursor:pointer" onclick="addSpecial('avos')">👴 Jantar avós</button>
+          <button class="psr" style="cursor:pointer" onclick="addSpecial('restos')">♻️ Restos avós</button>
+          <button class="psr" style="cursor:pointer" onclick="addSpecial('delivery')">🛵 Delivery</button>
+        </div>
+      </div>
+    </div>
+    <div class="plan-main">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <div class="weeks-toggle">
+          <button class="wbtn active" onclick="setPlanView('both',this)">Ambas as semanas</button>
+          <button class="wbtn" onclick="setPlanView('w1',this)">Semana 1</button>
+          <button class="wbtn" onclick="setPlanView('w2',this)">Semana 2</button>
+        </div>
+        <div class="plan-actions">
+          <button class="btn" onclick="clearCurrWeeks()">Limpar</button>
+          <button class="btn btn-p" onclick="gotoView('shopping')">Compras →</button>
+        </div>
+      </div>
+      <div id="plan-tables"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SHOPPING VIEW ===== -->
+<div class="view" id="view-shopping">
+  <div class="shop-header-row">
+    <div>
+      <div class="shop-title">🛒 Lista de Compras</div>
+      <div style="font-size:12px;color:var(--ink3);margin-top:2px">Continente · Semanas 1 e 2</div>
+    </div>
+    <div class="shop-actions">
+      <button class="btn" onclick="uncheckAll()">Desmarcar tudo</button>
+      <button class="btn" onclick="removeChecked()">Remover marcados</button>
+      <button class="btn btn-p" onclick="rebuildShop()">🔄 Actualizar da ementa</button>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="shop-add-row">
+    <input class="shop-add-input" type="text" id="shop-input" placeholder="Adicionar item manualmente..." onkeydown="if(event.key==='Enter')addShopItem()">
+    <select class="shop-add-cat" id="shop-cat-sel"></select>
+    <button class="btn btn-p" onclick="addShopItem()">+ Adicionar</button>
+  </div>
+  <div class="shop-grid" id="shop-grid"></div>
+</div>
+
+<script>
+const DAYS=['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
+const CAT_ICO={Salada:'🥗',Pasta:'🍝',Peixe:'🐟',Carne:'🥩',Veggie:'🥦',Sopa:'🍲',Outros:'🍳'};
+const LBL_CLS={Salada:'lbl-sl',Pasta:'lbl-p',Peixe:'lbl-p',Carne:'lbl-c',Veggie:'lbl-v',Sopa:'lbl-s',Outros:'lbl-o'};
+
+// SHOP CATEGORIES (ordem do percurso Continente)
+const SHOP_CATS=[
+  {id:'wc',name:'🚿 WC & Higiene'},
+  {id:'padaria',name:'🥖 Padaria'},
+  {id:'casa',name:'🏠 Casa & Limpeza'},
+  {id:'congelados',name:'❄️ Congelados'},
+  {id:'iogurtes',name:'🥛 Iogurtes'},
+  {id:'fruta',name:'🍎 Fruta'},
+  {id:'laticinios',name:'🧀 Laticínios'},
+  {id:'carnepeixe',name:'🥩 Carne / Peixe'},
+  {id:'snacks',name:'🍿 Snacks'},
+  {id:'bebidas',name:'🥤 Bebidas'},
+  {id:'massas',name:'🍝 Massas & Molhos'},
+  {id:'wells',name:'💊 Wells & Saúde'},
+  {id:'outros',name:'🛒 Outros'},
+];
+
+// INGREDIENT → SHOP CAT mapping
+function mapShopCat(name){
+  const n=name.toLowerCase();
+  if(/ovo|manteiga|natas|queijo|parmesão|mozzarella|feta|ricota|iogurte|creme azedo/.test(n)){
+    if(/iogurte/.test(n)) return 'iogurtes';
+    return 'laticinios';
+  }
+  if(/leite/.test(n)) return 'laticinios';
+  if(/frango|carne|bacon|presunto|fiambre|alheira|chouriço|salsichas|bife|lombinho|novilho|peru|camarão|salmão|atum fresco|pescada|bacalhau|peixe|espetada/.test(n)) return 'carnepeixe';
+  if(/atum em lata|atum lata/.test(n)) return 'massas';
+  if(/massa|esparguete|penne|fusilli|tagliatelle|macarrão|arroz|noodles|lasanha|canelão|wrap|molho|pesto|tomate pelado|molho de tomate/.test(n)) return 'massas';
+  if(/grão|feijão|milho|lentilhas/.test(n)) return 'massas';
+  if(/pão|baguete|torrada|base de pizza/.test(n)) return 'padaria';
+  if(/banana|maçã|laranja|morango|fruta|limão|abacate/.test(n)) return 'fruta';
+  if(/tomate|cenoura|cebola|alho|pimento|espinafre|couve|cogumelo|batata|alface|pepino|brócolos|abóbora|abobrinha|ervilha/.test(n)) return 'fruta';
+  if(/azeite|sal|pimenta|especiaria|vinagre|mostarda|mel|paprika|cumin|colorau|orégão|alecrim|tomilho|salsa|coentro|manjericão|gengibre|aneto|noz moscada/.test(n)) return 'massas';
+  if(/douradinhos|folhado|croquete|hambúrguer|nuggets/.test(n)) return 'congelados';
+  if(/água|vinho|sumo|refrigerante|cerveja|leite vegetal/.test(n)) return 'bebidas';
+  if(/shampoo|gel|sabão|detergente|papel/.test(n)) return 'wc';
+  return 'outros';
+}
+
+const RECIPES=[
+  {id:1,name:'Salada de atum, milho, tomate cherry e ovo cozido',cat:'Salada',tags:['Rápido'],time:10,health:4,kcal:320,prot:28,carb:18,fat:12,
+    radar:{proteina:4,carbos:2,gordura:2,fibra:3,vitaminas:4},
+    ing:[['Atum em lata','1 lata','carnepeixe'],['Milho cozido','100g','massas'],['Tomate cherry','8 unid','fruta'],['Ovo cozido','2 unid','laticinios'],['Alface','1/2 cabeça','fruta'],['Azeite','1 fio','massas'],['Limão','sumo de 1/2','fruta']],
+    link:'https://feed.continente.pt/receitas/esparguete-com-camarao',link2:'https://www.pingodoce.pt/receitas/salada-de-frango/'},
+  {id:2,name:'Salada César c/ frango, abacate e pepino',cat:'Salada',tags:['Rápido'],time:15,health:4,kcal:380,prot:32,carb:14,fat:18,
+    radar:{proteina:4,carbos:2,gordura:3,fibra:3,vitaminas:3},
+    ing:[['Peito de frango','1 unid','carnepeixe'],['Alface romana','1 cabeça','fruta'],['Croutons','punhado','padaria'],['Parmesão ralado','2 c. sopa','laticinios'],['Molho César','3 c. sopa','massas'],['Abacate','1/2','fruta'],['Pepino','1/2','fruta']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:'https://feed.continente.pt/receitas/frango-com-esparguete'},
+  {id:3,name:'Salada de batata-doce, feta e milho',cat:'Salada',tags:['Rápido'],time:20,health:5,kcal:290,prot:10,carb:32,fat:14,
+    radar:{proteina:2,carbos:4,gordura:2,fibra:4,vitaminas:5},
+    ing:[['Batata-doce','1 média','fruta'],['Queijo feta','80g','laticinios'],['Milho cozido','100g','massas'],['Espinafres baby','punhado','fruta'],['Azeite','2 c. sopa','massas'],['Mel','1 c. chá','massas'],['Vinagre balsâmico','1 c. sopa','massas']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango-e-legumes/',link2:''},
+  {id:4,name:'Salada de camarão, abacate e pickles',cat:'Salada',tags:['Rápido'],time:15,health:5,kcal:310,prot:24,carb:10,fat:18,
+    radar:{proteina:4,carbos:1,gordura:3,fibra:3,vitaminas:4},
+    ing:[['Camarão cozido','200g','carnepeixe'],['Abacate','1 unid','fruta'],['Pickles variados','50g','massas'],['Alface','folhas','fruta'],['Maionese light','2 c. sopa','massas'],['Limão','sumo','fruta'],['Coentros','pitada','fruta']],
+    link:'https://feed.continente.pt/receitas/esparguete-com-camarao',link2:''},
+  {id:5,name:'Salada de atum, feijão verde e ovo cozido',cat:'Salada',tags:['Rápido'],time:10,health:5,kcal:280,prot:26,carb:16,fat:9,
+    radar:{proteina:4,carbos:2,gordura:1,fibra:4,vitaminas:4},
+    ing:[['Atum em lata','1 lata','massas'],['Feijão verde cozido','150g','fruta'],['Tomate','1 unid','fruta'],['Cebola','1/4','fruta'],['Ovo cozido','2 unid','laticinios'],['Azeite','1 fio','massas'],['Vinagre','1 c. sopa','massas']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:''},
+  {id:6,name:'Salada de grão, atum e milho',cat:'Salada',tags:['Rápido'],time:10,health:5,kcal:340,prot:26,carb:28,fat:10,
+    radar:{proteina:4,carbos:3,gordura:1,fibra:5,vitaminas:3},
+    ing:[['Grão cozido (lata)','1 lata','massas'],['Atum em lata','1 lata','massas'],['Milho (lata)','100g','massas'],['Tomate cherry','8 unid','fruta'],['Azeite','2 c. sopa','massas'],['Limão','sumo','fruta'],['Sal e pimenta','q.b.','massas']],
+    link:'https://feed.continente.pt/receitas/esparguete-com-camarao',link2:''},
+  {id:7,name:'Salada russa',cat:'Salada',tags:['Rápido'],time:20,health:3,kcal:260,prot:8,carb:24,fat:14,
+    radar:{proteina:2,carbos:3,gordura:2,fibra:2,vitaminas:2},
+    ing:[['Batata','2 médias','fruta'],['Cenoura','2 unid','fruta'],['Ervilhas (lata)','100g','massas'],['Ovo cozido','2 unid','laticinios'],['Maionese','3 c. sopa','massas'],['Sal','q.b.','massas']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:''},
+  {id:8,name:'Salada de massa fria com atum e milho',cat:'Salada',tags:['Rápido'],time:15,health:3,kcal:370,prot:22,carb:40,fat:10,
+    radar:{proteina:3,carbos:4,gordura:1,fibra:2,vitaminas:2},
+    ing:[['Massa cozida','150g','massas'],['Atum em lata','1 lata','massas'],['Milho (lata)','80g','massas'],['Tomate cherry','6 unid','fruta'],['Azeitonas','punhado','massas'],['Azeite','1 fio','massas'],['Orégãos','q.b.','massas']],
+    link:'https://feed.continente.pt/receitas/massa-frango',link2:''},
+  {id:9,name:'Salada de frango grelhado com alface e croutons',cat:'Salada',tags:['Rápido'],time:20,health:4,kcal:350,prot:30,carb:18,fat:14,
+    radar:{proteina:4,carbos:2,gordura:2,fibra:3,vitaminas:3},
+    ing:[['Peito de frango','1 unid','carnepeixe'],['Alface','1/2 cabeça','fruta'],['Croutons','punhado','padaria'],['Tomate cherry','6 unid','fruta'],['Parmesão','q.b.','laticinios'],['Molho de iogurte','3 c. sopa','iogurtes']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango-e-legumes/',link2:''},
+  {id:10,name:'Salada caprese (tomate, mozzarella, manjericão)',cat:'Salada',tags:['Rápido'],time:5,health:4,kcal:240,prot:14,carb:6,fat:16,
+    radar:{proteina:2,carbos:1,gordura:2,fibra:2,vitaminas:4},
+    ing:[['Tomate','2 médios','fruta'],['Mozzarella fresca','125g','laticinios'],['Manjericão fresco','folhas','fruta'],['Azeite extra virgem','2 c. sopa','massas'],['Sal flor','q.b.','massas'],['Pimenta','q.b.','massas']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:''},
+  {id:11,name:'Tortellini Rana Ricota',cat:'Pasta',tags:['Rápido'],time:15,health:3,kcal:460,prot:18,carb:52,fat:18,
+    radar:{proteina:3,carbos:5,gordura:3,fibra:2,vitaminas:2},
+    ing:[['Tortellini Rana Ricota','1 embalagem','massas'],['Molho de tomate','200ml','massas'],['Parmesão','q.b.','laticinios'],['Manjericão','folhas','fruta'],['Azeite','1 fio','massas']],
+    link:'https://feed.continente.pt/receitas/massa-frango',link2:''},
+  {id:12,name:'Fusilli com pesto, tomate cherry e mozzarella',cat:'Pasta',tags:['Rápido'],time:15,health:3,kcal:490,prot:16,carb:54,fat:20,
+    radar:{proteina:2,carbos:5,gordura:3,fibra:2,vitaminas:3},
+    ing:[['Fusilli','150g','massas'],['Pesto','3 c. sopa','massas'],['Tomate cherry','8 unid','fruta'],['Mozzarella fresca','80g','laticinios'],['Parmesão','q.b.','laticinios'],['Azeite','1 fio','massas']],
+    link:'https://feed.continente.pt/receitas/fusilli-com-salmao-fumado',link2:''},
+  {id:13,name:'Noodles de Camarão',cat:'Pasta',tags:['Rápido'],time:15,health:3,kcal:400,prot:22,carb:48,fat:12,
+    radar:{proteina:3,carbos:4,gordura:2,fibra:2,vitaminas:3},
+    ing:[['Noodles','1 embalagem','massas'],['Camarão descascado','150g','carnepeixe'],['Molho de soja','2 c. sopa','massas'],['Alho','2 dentes','fruta'],['Gengibre','1 cm','fruta'],['Cebolinho','q.b.','fruta']],
+    link:'https://feed.continente.pt/receitas/esparguete-com-camarao',link2:''},
+  {id:14,name:'Lacinhos com salmão e aneto',cat:'Pasta',tags:['Rápido'],time:20,health:4,kcal:480,prot:26,carb:50,fat:16,
+    radar:{proteina:4,carbos:4,gordura:2,fibra:2,vitaminas:3},
+    ing:[['Lacinhos (farfalle)','150g','massas'],['Salmão fresco','120g','carnepeixe'],['Natas light','100ml','laticinios'],['Alho','2 dentes','fruta'],['Aneto seco','1 c. chá','massas'],['Limão','sumo de 1/2','fruta'],['Parmesão','q.b.','laticinios']],
+    link:'https://feed.continente.pt/receitas/massa-salmao',link2:''},
+  {id:15,name:'Esparguete à bolonhesa',cat:'Pasta',tags:['Domingos'],time:30,health:4,kcal:520,prot:30,carb:52,fat:16,
+    radar:{proteina:4,carbos:5,gordura:2,fibra:3,vitaminas:3},
+    ing:[['Esparguete','150g','massas'],['Carne picada mista','200g','carnepeixe'],['Molho de tomate','300ml','massas'],['Cebola','1 unid','fruta'],['Alho','2 dentes','fruta'],['Cenoura','1 unid','fruta'],['Vinho tinto','100ml','bebidas'],['Azeite','2 c. sopa','massas']],
+    link:'https://www.pingodoce.pt/receitas/esparguete-a-bolonhesa/',link2:'https://feed.continente.pt/receitas/lasanha'},
+  {id:16,name:'Fusilli com salmão fumado',cat:'Pasta',tags:['Rápido'],time:15,health:4,kcal:470,prot:24,carb:50,fat:16,
+    radar:{proteina:3,carbos:4,gordura:2,fibra:2,vitaminas:3},
+    ing:[['Fusilli','150g','massas'],['Salmão fumado','100g','carnepeixe'],['Natas light','100ml','laticinios'],['Alho-francês','1/2','fruta'],['Aneto','q.b.','massas'],['Limão','sumo','fruta'],['Azeite','1 fio','massas']],
+    link:'https://feed.continente.pt/receitas/fusilli-com-salmao-fumado',link2:''},
+  {id:17,name:'Massa carbonara com natas e bacon',cat:'Pasta',tags:['Rápido'],time:20,health:2,kcal:560,prot:24,carb:50,fat:26,
+    radar:{proteina:3,carbos:5,gordura:4,fibra:1,vitaminas:2},
+    ing:[['Esparguete','150g','massas'],['Bacon','100g','carnepeixe'],['Natas','100ml','laticinios'],['Ovo','2 unid','laticinios'],['Parmesão','60g','laticinios'],['Pimenta preta','q.b.','massas'],['Sal','q.b.','massas']],
+    link:'https://feed.continente.pt/receitas/massa-com-natas-e-bacon',link2:''},
+  {id:18,name:'Penne all\'arrabbiata',cat:'Pasta',tags:['Rápido','Veggie'],time:20,health:4,kcal:390,prot:12,carb:58,fat:10,
+    radar:{proteina:2,carbos:5,gordura:1,fibra:3,vitaminas:3},
+    ing:[['Penne','150g','massas'],['Molho de tomate','200ml','massas'],['Alho','3 dentes','fruta'],['Piri-piri','a gosto','massas'],['Azeite','2 c. sopa','massas'],['Salsa','q.b.','fruta']],
+    link:'https://feed.continente.pt/receitas/massa-frango',link2:'https://www.pingodoce.pt/receitas/esparguete-a-bolonhesa/'},
+  {id:19,name:'Massa com cogumelos, alho e azeite',cat:'Pasta',tags:['Rápido','Veggie'],time:20,health:4,kcal:400,prot:14,carb:52,fat:14,
+    radar:{proteina:2,carbos:4,gordura:2,fibra:3,vitaminas:3},
+    ing:[['Esparguete','150g','massas'],['Cogumelos frescos','200g','fruta'],['Alho','4 dentes','fruta'],['Azeite','3 c. sopa','massas'],['Salsa','punhado','fruta'],['Parmesão','q.b.','laticinios'],['Pimenta','q.b.','massas']],
+    link:'https://feed.continente.pt/receitas/massa-frango',link2:''},
+  {id:20,name:'Tagliatelle com camarão e alho',cat:'Pasta',tags:['Rápido'],time:20,health:4,kcal:440,prot:26,carb:50,fat:12,
+    radar:{proteina:4,carbos:4,gordura:2,fibra:2,vitaminas:3},
+    ing:[['Tagliatelle','150g','massas'],['Camarão grande','200g','carnepeixe'],['Alho','4 dentes','fruta'],['Manteiga','20g','laticinios'],['Vinho branco','50ml','bebidas'],['Limão','sumo','fruta'],['Salsa','q.b.','fruta']],
+    link:'https://feed.continente.pt/receitas/esparguete-com-camarao',link2:''},
+  {id:21,name:'Rigatoni com frango e natas',cat:'Pasta',tags:['Rápido'],time:25,health:3,kcal:490,prot:28,carb:50,fat:18,
+    radar:{proteina:4,carbos:4,gordura:3,fibra:2,vitaminas:2},
+    ing:[['Rigatoni','150g','massas'],['Peito de frango','1 unid','carnepeixe'],['Natas','150ml','laticinios'],['Cebola','1/2','fruta'],['Alho','2 dentes','fruta'],['Parmesão','q.b.','laticinios'],['Tomilho','q.b.','massas']],
+    link:'https://feed.continente.pt/receitas/massa-frango',link2:''},
+  {id:22,name:'Penne com frango e pesto',cat:'Pasta',tags:['Rápido'],time:20,health:4,kcal:470,prot:30,carb:50,fat:14,
+    radar:{proteina:4,carbos:4,gordura:2,fibra:2,vitaminas:3},
+    ing:[['Penne','150g','massas'],['Peito de frango','1 unid','carnepeixe'],['Pesto','3 c. sopa','massas'],['Tomate cherry','6 unid','fruta'],['Parmesão','q.b.','laticinios'],['Azeite','1 fio','massas']],
+    link:'https://feed.continente.pt/receitas/massa-frango',link2:''},
+  {id:23,name:'Esparguete com camarão',cat:'Pasta',tags:['Rápido'],time:20,health:4,kcal:430,prot:26,carb:50,fat:12,
+    radar:{proteina:4,carbos:4,gordura:2,fibra:2,vitaminas:3},
+    ing:[['Esparguete','150g','massas'],['Camarão descascado','200g','carnepeixe'],['Alho','3 dentes','fruta'],['Tomate cherry','8 unid','fruta'],['Vinho branco','50ml','bebidas'],['Azeite','2 c. sopa','massas'],['Salsa','q.b.','fruta']],
+    link:'https://feed.continente.pt/receitas/esparguete-com-camarao',link2:''},
+  {id:24,name:'Douradinhos com arroz',cat:'Peixe',tags:['Rápido'],time:15,health:2,kcal:380,prot:18,carb:28,fat:18,
+    radar:{proteina:3,carbos:3,gordura:3,fibra:1,vitaminas:2},
+    ing:[['Douradinhos Continente','1 embalagem','congelados'],['Arroz','100g','massas'],['Limão','sumo','fruta']],
+    link:'https://feed.continente.pt/receitas/esparguete-com-camarao',link2:''},
+  {id:25,name:'Lombinhos de salmão grelhados',cat:'Peixe',tags:['Domingos'],time:25,health:5,kcal:340,prot:30,carb:4,fat:20,
+    radar:{proteina:5,carbos:1,gordura:3,fibra:1,vitaminas:4},
+    ing:[['Lombinhos de salmão','2 unid','carnepeixe'],['Azeite','2 c. sopa','massas'],['Limão','1 unid','fruta'],['Alho','2 dentes','fruta'],['Aneto','q.b.','massas'],['Sal e pimenta','q.b.','massas']],
+    link:'https://feed.continente.pt/receitas/massa-salmao',link2:''},
+  {id:26,name:'Folhado de salmão',cat:'Peixe',tags:['Domingos'],time:30,health:3,kcal:420,prot:24,carb:28,fat:22,
+    radar:{proteina:3,carbos:3,gordura:3,fibra:1,vitaminas:3},
+    ing:[['Salmão','200g','carnepeixe'],['Massa folhada','1 placa','massas'],['Espinafres','100g','fruta'],['Queijo creme','100g','laticinios'],['Ovo','1 unid','laticinios'],['Sal e pimenta','q.b.','massas']],
+    link:'https://feed.continente.pt/receitas/lasanha-de-salmao',link2:''},
+  {id:27,name:'Filetes de pescada no forno com limão e alho',cat:'Peixe',tags:['Rápido'],time:25,health:5,kcal:280,prot:30,carb:6,fat:12,
+    radar:{proteina:5,carbos:1,gordura:2,fibra:1,vitaminas:4},
+    ing:[['Filetes de pescada','300g','carnepeixe'],['Limão','1 unid','fruta'],['Alho','3 dentes','fruta'],['Azeite','2 c. sopa','massas'],['Salsa','punhado','fruta'],['Paprika','1 c. chá','massas']],
+    link:'https://feed.continente.pt/receitas/esparguete-com-camarao',link2:'https://www.pingodoce.pt/receitas/frango-grelhado-com-salada-de-verao/'},
+  {id:28,name:'Bacalhau à Brás',cat:'Peixe',tags:['Domingos'],time:35,health:4,kcal:440,prot:28,carb:30,fat:18,
+    radar:{proteina:4,carbos:3,gordura:3,fibra:2,vitaminas:3},
+    ing:[['Bacalhau demolhado desfiado','300g','carnepeixe'],['Batata palha','100g','fruta'],['Ovo','4 unid','laticinios'],['Cebola','1 unid','fruta'],['Alho','2 dentes','fruta'],['Azeite','3 c. sopa','massas'],['Azeitonas','punhado','massas'],['Salsa','q.b.','fruta']],
+    link:'https://feed.continente.pt/receitas/bacalhau-a-bras',link2:''},
+  {id:29,name:'Camarão com alho e manteiga',cat:'Peixe',tags:['Rápido'],time:15,health:4,kcal:300,prot:28,carb:4,fat:16,
+    radar:{proteina:5,carbos:1,gordura:2,fibra:1,vitaminas:3},
+    ing:[['Camarão grande','300g','carnepeixe'],['Manteiga','30g','laticinios'],['Alho','4 dentes','fruta'],['Vinho branco','50ml','bebidas'],['Limão','sumo','fruta'],['Salsa','q.b.','fruta'],['Piri-piri','a gosto','massas']],
+    link:'https://feed.continente.pt/receitas/esparguete-com-camarao',link2:'https://www.pingodoce.pt/receitas/salada-de-frango/'},
+  {id:30,name:'Salmão no forno com mel e mostarda',cat:'Peixe',tags:['Rápido'],time:25,health:5,kcal:360,prot:32,carb:10,fat:18,
+    radar:{proteina:5,carbos:1,gordura:3,fibra:1,vitaminas:4},
+    ing:[['Salmão','2 postas','carnepeixe'],['Mel','2 c. sopa','massas'],['Mostarda Dijon','1 c. sopa','massas'],['Alho em pó','1 c. chá','massas'],['Limão','sumo','fruta'],['Sal e pimenta','q.b.','massas']],
+    link:'https://feed.continente.pt/receitas/massa-salmao',link2:''},
+  {id:31,name:'Atum fresco grelhado com batata e salada',cat:'Peixe',tags:['Rápido'],time:25,health:5,kcal:380,prot:34,carb:22,fat:14,
+    radar:{proteina:5,carbos:2,gordura:2,fibra:2,vitaminas:4},
+    ing:[['Atum fresco','200g','carnepeixe'],['Batata','2 médias','fruta'],['Molho de soja','2 c. sopa','massas'],['Limão','sumo','fruta'],['Azeite','1 c. sopa','massas'],['Alface','folhas','fruta']],
+    link:'https://feed.continente.pt/receitas/esparguete-com-camarao',link2:''},
+  {id:32,name:'Carne de porco à alentejana',cat:'Carne',tags:['Domingos'],time:45,health:4,kcal:480,prot:36,carb:22,fat:22,
+    radar:{proteina:5,carbos:2,gordura:3,fibra:2,vitaminas:3},
+    ing:[['Carne de porco (lombinho)','400g','carnepeixe'],['Amêijoas','300g','carnepeixe'],['Batata','400g','fruta'],['Alho','4 dentes','fruta'],['Vinho branco','150ml','bebidas'],['Colorau','1 c. sopa','massas'],['Louro','2 folhas','massas'],['Coentros','punhado','fruta'],['Azeite','3 c. sopa','massas']],
+    link:'https://feed.continente.pt/receitas/frango-estufado',link2:'https://www.pingodoce.pt/receitas/salada-de-frango/'},
+  {id:33,name:'Strogonoff de frango e cogumelos',cat:'Carne',tags:['Domingos'],time:30,health:4,kcal:440,prot:34,carb:16,fat:20,
+    radar:{proteina:5,carbos:2,gordura:3,fibra:2,vitaminas:3},
+    ing:[['Peito de frango','2 unid','carnepeixe'],['Cogumelos frescos','250g','fruta'],['Natas light','200ml','laticinios'],['Cebola','1 unid','fruta'],['Alho','2 dentes','fruta'],['Mostarda','1 c. sopa','massas'],['Paprika','1 c. chá','massas'],['Arroz','acompanhamento','massas']],
+    link:'https://feed.continente.pt/receitas/strogonoff',link2:''},
+  {id:34,name:'Hambúrgueres caseiros',cat:'Carne',tags:['Rápido'],time:20,health:3,kcal:490,prot:32,carb:30,fat:24,
+    radar:{proteina:4,carbos:3,gordura:4,fibra:2,vitaminas:2},
+    ing:[['Carne picada','300g','carnepeixe'],['Pão de hambúrguer','2 unid','padaria'],['Cebola','1/2','fruta'],['Alface','folhas','fruta'],['Tomate','1 unid','fruta'],['Queijo cheddar','2 fatias','laticinios'],['Mostarda/ketchup','a gosto','massas']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:''},
+  {id:35,name:'Almôndegas em molho de tomate',cat:'Carne',tags:['Domingos'],time:35,health:4,kcal:420,prot:30,carb:20,fat:20,
+    radar:{proteina:4,carbos:2,gordura:3,fibra:2,vitaminas:3},
+    ing:[['Carne picada mista','400g','carnepeixe'],['Ovo','1 unid','laticinios'],['Pão ralado','50g','padaria'],['Alho','2 dentes','fruta'],['Molho de tomate','400ml','massas'],['Cebola','1 unid','fruta'],['Salsa','q.b.','fruta'],['Azeite','2 c. sopa','massas']],
+    link:'https://feed.continente.pt/receitas/almondegas-de-frango-com-parmesao-esparguete-e-molho-de-tomate',link2:'https://www.pingodoce.pt/receitas/esparguete-a-bolonhesa/'},
+  {id:36,name:'Frango estufado com cenoura e batata-doce',cat:'Carne',tags:['Domingos'],time:40,health:5,kcal:380,prot:34,carb:22,fat:12,
+    radar:{proteina:5,carbos:2,gordura:2,fibra:3,vitaminas:5},
+    ing:[['Coxas de frango','4 unid','carnepeixe'],['Cenoura','2 unid','fruta'],['Batata-doce','1 média','fruta'],['Cebola','1 unid','fruta'],['Alho','2 dentes','fruta'],['Caldo de galinha','200ml','massas'],['Tomilho','q.b.','massas'],['Azeite','2 c. sopa','massas']],
+    link:'https://feed.continente.pt/receitas/frango-estufado',link2:'https://www.pingodoce.pt/receitas/salada-de-frango/'},
+  {id:37,name:'Tacos de carne picada',cat:'Carne',tags:['Rápido'],time:20,health:3,kcal:460,prot:28,carb:36,fat:18,
+    radar:{proteina:4,carbos:4,gordura:3,fibra:2,vitaminas:3},
+    ing:[['Carne picada','300g','carnepeixe'],['Tacos de milho','6 unid','massas'],['Alface','folhas','fruta'],['Tomate','1 unid','fruta'],['Queijo ralado','60g','laticinios'],['Creme azedo/iogurte','50g','iogurtes'],['Tempero para tacos','1 c. sopa','massas'],['Cebola','1/2','fruta']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:''},
+  {id:38,name:'Espetadas de frango marinado',cat:'Carne',tags:['Rápido'],time:25,health:5,kcal:320,prot:36,carb:8,fat:14,
+    radar:{proteina:5,carbos:1,gordura:2,fibra:1,vitaminas:4},
+    ing:[['Peito de frango','2 unid','carnepeixe'],['Pimento colorido','1 unid','fruta'],['Cebola roxa','1 unid','fruta'],['Azeite','2 c. sopa','massas'],['Limão','sumo','fruta'],['Paprika','1 c. chá','massas'],['Alho em pó','1 c. chá','massas'],['Tomilho','q.b.','massas']],
+    link:'https://www.pingodoce.pt/receitas/frango-grelhado-com-salada-de-verao/',link2:''},
+  {id:39,name:'Bifes de frango com molho de natas e cogumelos',cat:'Carne',tags:['Rápido'],time:25,health:4,kcal:400,prot:36,carb:8,fat:22,
+    radar:{proteina:5,carbos:1,gordura:3,fibra:2,vitaminas:3},
+    ing:[['Bife de frango','2 unid','carnepeixe'],['Cogumelos','150g','fruta'],['Natas light','150ml','laticinios'],['Alho','2 dentes','fruta'],['Cebola','1/2','fruta'],['Vinho branco','50ml','bebidas'],['Salsa','q.b.','fruta']],
+    link:'https://feed.continente.pt/receitas/strogonoff',link2:''},
+  {id:40,name:'Frango assado no forno com batata e alho',cat:'Carne',tags:['Domingos'],time:60,health:5,kcal:460,prot:40,carb:28,fat:18,
+    radar:{proteina:5,carbos:3,gordura:2,fibra:2,vitaminas:4},
+    ing:[['Coxas ou frango inteiro','1.2kg','carnepeixe'],['Batata','400g','fruta'],['Alho','1 cabeça','fruta'],['Azeite','3 c. sopa','massas'],['Limão','1 unid','fruta'],['Alecrim','ramos','massas'],['Tomilho','ramos','massas'],['Sal e pimenta','q.b.','massas']],
+    link:'https://feed.continente.pt/receitas/frango-estufado',link2:'https://www.pingodoce.pt/receitas/frango-grelhado-com-salada-de-verao/'},
+  {id:41,name:'Frango panado no forno com batata',cat:'Carne',tags:['Rápido'],time:35,health:4,kcal:440,prot:34,carb:32,fat:16,
+    radar:{proteina:4,carbos:3,gordura:2,fibra:2,vitaminas:3},
+    ing:[['Peito de frango','2 unid','carnepeixe'],['Pão ralado','100g','padaria'],['Ovo','1 unid','laticinios'],['Batata','2 médias','fruta'],['Paprika','1 c. chá','massas'],['Azeite','2 c. sopa','massas'],['Sal','q.b.','massas']],
+    link:'https://feed.continente.pt/receitas/frango-estufado',link2:''},
+  {id:42,name:'Lombinho de porco com batata-doce',cat:'Carne',tags:['Domingos'],time:40,health:4,kcal:420,prot:34,carb:24,fat:16,
+    radar:{proteina:5,carbos:2,gordura:2,fibra:2,vitaminas:3},
+    ing:[['Lombinho de porco','400g','carnepeixe'],['Batata-doce','2 médias','fruta'],['Alecrim','ramos','massas'],['Alho','4 dentes','fruta'],['Azeite','3 c. sopa','massas'],['Mel','1 c. sopa','massas'],['Mostarda','1 c. sopa','massas']],
+    link:'https://feed.continente.pt/receitas/frango-estufado',link2:''},
+  {id:43,name:'Tortilha de batata e cebola',cat:'Veggie',tags:['Rápido','Veggie'],time:30,health:4,kcal:340,prot:16,carb:28,fat:16,
+    radar:{proteina:3,carbos:3,gordura:2,fibra:2,vitaminas:3},
+    ing:[['Batata','3 médias','fruta'],['Ovo','4 unid','laticinios'],['Cebola','1 unid','fruta'],['Azeite','4 c. sopa','massas'],['Sal','q.b.','massas'],['Salsa','q.b.','fruta']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:''},
+  {id:44,name:'Tofu frito com molho teriyaki e arroz',cat:'Veggie',tags:['Rápido','Veggie'],time:25,health:4,kcal:380,prot:18,carb:44,fat:12,
+    radar:{proteina:3,carbos:4,gordura:2,fibra:3,vitaminas:3},
+    ing:[['Tofu firme','250g','carnepeixe'],['Arroz','150g','massas'],['Molho teriyaki','3 c. sopa','massas'],['Alho','2 dentes','fruta'],['Gengibre','1 cm','fruta'],['Cebolinho','q.b.','fruta'],['Sésamo','q.b.','massas'],['Óleo de sésamo','1 c. chá','massas']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:''},
+  {id:45,name:'Tosta de abacate e ovo',cat:'Veggie',tags:['Rápido','Veggie'],time:10,health:5,kcal:300,prot:14,carb:24,fat:16,
+    radar:{proteina:2,carbos:3,gordura:2,fibra:3,vitaminas:4},
+    ing:[['Pão de centeio','2 fatias','padaria'],['Abacate','1 unid','fruta'],['Ovo','2 unid','laticinios'],['Limão','sumo','fruta'],['Sal flor','q.b.','massas'],['Pimenta preta','q.b.','massas'],['Sementes de sésamo','q.b.','massas']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:''},
+  {id:46,name:'Bruschetas com tomate e manjericão',cat:'Veggie',tags:['Rápido','Veggie'],time:10,health:4,kcal:260,prot:8,carb:34,fat:10,
+    radar:{proteina:1,carbos:4,gordura:1,fibra:2,vitaminas:4},
+    ing:[['Baguete','1/2','padaria'],['Tomate','3 médios','fruta'],['Manjericão fresco','punhado','fruta'],['Alho','1 dente','fruta'],['Azeite extra virgem','2 c. sopa','massas'],['Sal flor','q.b.','massas'],['Vinagre balsâmico','1 c. sopa','massas']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:''},
+  {id:47,name:'Ovos rotos com batata e presunto',cat:'Veggie',tags:['Rápido'],time:20,health:3,kcal:420,prot:22,carb:30,fat:20,
+    radar:{proteina:3,carbos:3,gordura:3,fibra:2,vitaminas:2},
+    ing:[['Ovo','3 unid','laticinios'],['Batata','2 médias','fruta'],['Presunto','50g','carnepeixe'],['Azeite','2 c. sopa','massas'],['Sal e pimenta','q.b.','massas']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:''},
+  {id:48,name:'Quesadillas de frango e queijo',cat:'Veggie',tags:['Rápido'],time:15,health:3,kcal:410,prot:26,carb:36,fat:16,
+    radar:{proteina:4,carbos:4,gordura:2,fibra:2,vitaminas:2},
+    ing:[['Wraps de trigo','2 unid','massas'],['Peito de frango cozinhado','150g','carnepeixe'],['Queijo cheddar','80g','laticinios'],['Pimento','1/2','fruta'],['Cebola','1/4','fruta'],['Paprika','q.b.','massas']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:''},
+  {id:49,name:'Wrap de frango com guacamole',cat:'Veggie',tags:['Rápido'],time:20,health:4,kcal:420,prot:30,carb:36,fat:14,
+    radar:{proteina:4,carbos:4,gordura:2,fibra:3,vitaminas:4},
+    ing:[['Wrap de trigo','2 unid','massas'],['Peito de frango','1 unid','carnepeixe'],['Abacate','1 unid','fruta'],['Tomate','1 unid','fruta'],['Cebola roxa','1/4','fruta'],['Limão','sumo','fruta'],['Alface','folhas','fruta'],['Coentros','q.b.','fruta']],
+    link:'https://feed.continente.pt/receitas/frango-com-esparguete',link2:''},
+  {id:50,name:'Sopa de cenoura e abóbora',cat:'Sopa',tags:['Domingos'],time:30,health:5,kcal:180,prot:4,carb:28,fat:6,
+    radar:{proteina:1,carbos:3,gordura:1,fibra:4,vitaminas:5},
+    ing:[['Cenoura','4 unid','fruta'],['Abóbora','300g','fruta'],['Batata','1 unid','fruta'],['Cebola','1 unid','fruta'],['Alho','2 dentes','fruta'],['Azeite','2 c. sopa','massas'],['Caldo de legumes','600ml','massas'],['Natas (opcional)','2 c. sopa','laticinios']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:'https://feed.continente.pt/receitas/frango-estufado'},
+  {id:51,name:'Sopa de alho francês e batata',cat:'Sopa',tags:['Rápido'],time:30,health:5,kcal:160,prot:5,carb:26,fat:5,
+    radar:{proteina:1,carbos:3,gordura:1,fibra:4,vitaminas:5},
+    ing:[['Alho-francês','2 unid','fruta'],['Batata','2 médias','fruta'],['Cebola','1 unid','fruta'],['Azeite','2 c. sopa','massas'],['Caldo de legumes','600ml','massas'],['Sal e pimenta','q.b.','massas']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:''},
+  {id:52,name:'Caldo de frango com massa',cat:'Sopa',tags:['Rápido'],time:30,health:5,kcal:200,prot:18,carb:22,fat:4,
+    radar:{proteina:3,carbos:3,gordura:1,fibra:3,vitaminas:4},
+    ing:[['Coxas de frango','2 unid','carnepeixe'],['Massa pequena','80g','massas'],['Cenoura','2 unid','fruta'],['Cebola','1 unid','fruta'],['Alho','2 dentes','fruta'],['Salsa','q.b.','fruta'],['Sal','q.b.','massas']],
+    link:'https://feed.continente.pt/receitas/frango-estufado',link2:''},
+  {id:53,name:'Sopa de tomate assado com torrada',cat:'Sopa',tags:['Rápido'],time:35,health:5,kcal:190,prot:6,carb:24,fat:8,
+    radar:{proteina:1,carbos:3,gordura:1,fibra:4,vitaminas:5},
+    ing:[['Tomate','6 maduros','fruta'],['Alho','1 cabeça','fruta'],['Cebola','1 unid','fruta'],['Azeite','3 c. sopa','massas'],['Caldo de legumes','400ml','massas'],['Manjericão','punhado','fruta'],['Pão torrado','para servir','padaria']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:''},
+  {id:54,name:'Pizza caseira rápida',cat:'Outros',tags:['Rápido'],time:25,health:2,kcal:480,prot:18,carb:56,fat:18,
+    radar:{proteina:2,carbos:5,gordura:3,fibra:1,vitaminas:2},
+    ing:[['Base de pizza pronta','1 unid','padaria'],['Molho de tomate','3 c. sopa','massas'],['Mozzarella','150g','laticinios'],['Ingredientes a gosto','q.b.','outros'],['Orégãos','q.b.','massas']],
+    link:'https://feed.continente.pt/receitas/massa-frango',link2:''},
+  {id:55,name:'Quiche de espinafres, mozzarella e tomate',cat:'Outros',tags:['Domingos'],time:45,health:4,kcal:380,prot:16,carb:24,fat:22,
+    radar:{proteina:2,carbos:3,gordura:3,fibra:2,vitaminas:4},
+    ing:[['Massa quebrada','1 placa','massas'],['Mozzarella','100g','laticinios'],['Espinafres','150g','fruta'],['Tomate','2 unid','fruta'],['Ovo','3 unid','laticinios'],['Natas','150ml','laticinios'],['Sal e pimenta','q.b.','massas']],
+    link:'https://feed.continente.pt/receitas/lasanha',link2:''},
+  {id:56,name:'Quiche de frango',cat:'Outros',tags:['Domingos'],time:45,health:3,kcal:400,prot:22,carb:24,fat:22,
+    radar:{proteina:3,carbos:3,gordura:3,fibra:2,vitaminas:3},
+    ing:[['Massa quebrada','1 placa','massas'],['Frango desfiado','200g','carnepeixe'],['Ovo','3 unid','laticinios'],['Natas','150ml','laticinios'],['Queijo','60g','laticinios'],['Cebola','1/2','fruta'],['Sal e pimenta','q.b.','massas']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:''},
+  {id:57,name:'Ovos rotos variados / Bitoque',cat:'Outros',tags:['Rápido'],time:20,health:3,kcal:460,prot:26,carb:26,fat:20,
+    radar:{proteina:3,carbos:3,gordura:3,fibra:1,vitaminas:2},
+    ing:[['Ovo','3 unid','laticinios'],['Batata','2 médias','fruta'],['Bife / proteína','1 unid','carnepeixe'],['Azeite','2 c. sopa','massas'],['Sal e pimenta','q.b.','massas']],
+    link:'https://www.pingodoce.pt/receitas/salada-de-frango/',link2:''},
+  {id:58,name:'Canelones de espinafres e ricota',cat:'Outros',tags:['Domingos'],time:50,health:4,kcal:440,prot:22,carb:38,fat:20,
+    radar:{proteina:3,carbos:4,gordura:3,fibra:3,vitaminas:4},
+    ing:[['Placas de canelão','12 unid','massas'],['Espinafres','300g','fruta'],['Ricota','250g','laticinios'],['Béchamel','300ml','laticinios'],['Molho de tomate','200ml','massas'],['Parmesão','80g','laticinios'],['Noz moscada','q.b.','massas']],
+    link:'https://feed.continente.pt/receitas/lasanha',link2:''},
+  {id:59,name:'Lasanha de carne',cat:'Outros',tags:['Domingos'],time:55,health:4,kcal:510,prot:30,carb:42,fat:20,
+    radar:{proteina:4,carbos:4,gordura:3,fibra:2,vitaminas:3},
+    ing:[['Placas de lasanha','12 unid','massas'],['Carne picada','500g','carnepeixe'],['Béchamel','300ml','laticinios'],['Molho de tomate','400ml','massas'],['Queijo ralado','100g','laticinios'],['Cebola','1 unid','fruta'],['Alho','2 dentes','fruta'],['Azeite','2 c. sopa','massas']],
+    link:'https://feed.continente.pt/receitas/lasanha',link2:'https://www.pingodoce.pt/receitas/esparguete-a-bolonhesa/'},
+];
+
+// SITUATIONS
+const SITUATIONS=[
+  {icon:'🏋️',title:'Depois do ginásio / corrida',desc:'Alta proteína, carbos para recuperar, anti-inflamatório',ids:[1,9,25,30,27,38,41,44,52,31,6,36]},
+  {icon:'😴',title:'Dia cansativo / sem energia',desc:'Rápido, reconfortante, sem grande esforço de preparação',ids:[11,17,13,12,47,46,45,54,57,34,18,49]},
+  {icon:'🥗',title:'Almoço leve e rápido',desc:'Fresco, menos de 15 minutos, não pesa na barriga',ids:[1,5,6,4,3,10,8,45,46,9,2,7]},
+  {icon:'❄️',title:'Nada em casa / congelados',desc:'Pratos que se fazem só com o que normalmente há em casa',ids:[24,11,12,57,47,18,8,43,46,54,6,1]},
+  {icon:'🌙',title:'Jantar de domingo (prato grande)',desc:'Cozinhar bastante para a semana, mais elaborado',ids:[15,32,33,35,36,40,42,50,55,56,58,59]},
+  {icon:'💪',title:'Muito proteico',desc:'Foco em proteína — pós treino, dia de esforço físico',ids:[25,30,31,27,29,38,39,40,32,36,23,20]},
+  {icon:'🥬',title:'Mais vegetal / detox',desc:'Leve, cheio de fibra e vitaminas, menos carne',ids:[50,51,53,3,10,43,44,45,46,6,1,5]},
+  {icon:'⏱️',title:'Menos de 15 minutos',desc:'Para quando o tempo é mesmo pouco',ids:[1,5,6,10,45,46,13,29,48,12,4,8]},
+];
+
+// STATE
+
+function save(){sv();}
+
+// ===== VIEWS =====
+function gotoView(v){
+  document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  const idx={recipes:0,sugestoes:1,planner:2,shopping:3};
+  document.querySelectorAll('.nav-tab')[idx[v]].classList.add('active');
+  if(v==='recipes')renderRecipes();
+  if(v==='sugestoes')renderSituations();
+  if(v==='planner'){renderSidebar();renderPlanner();}
+  if(v==='shopping')renderShopping();
+}
+
+// ===== RECIPES =====
+function hColor(h){return h>=5?'#4A7C59':h>=4?'#7CB87A':h>=3?'#D4860B':h>=2?'#E07030':'#B83232'}
+function hText(h){return['','Pouco saudável','Moderado','Razoável','Saudável','Muito saudável'][h]||''}
+
+function setFilter(f,el){
+  rFilter=f;
+  document.querySelectorAll('#filter-chips .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderRecipes();
+}
+
+function renderRecipes(){
+  const q=document.getElementById('rsearch').value.toLowerCase();
+  const cats=rFilter==='all'?Object.keys(CAT_ICO):rFilter==='rapido'?null:rFilter==='fav'?null:[rFilter];
+  const container=document.getElementById('rcontainer');container.innerHTML='';
+  const grouped={};
+  RECIPES.forEach(r=>{
+    if(rFilter==='fav'&&!favs[r.id])return;
+    if(rFilter==='rapido'&&!r.tags.includes('Rápido'))return;
+    if(cats&&!cats.includes(r.cat))return;
+    if(q&&!r.name.toLowerCase().includes(q))return;
+    if(!grouped[r.cat])grouped[r.cat]=[];
+    grouped[r.cat].push(r);
+  });
+  if(!Object.keys(grouped).length){container.innerHTML='<div style="text-align:center;padding:3rem;color:var(--ink3);font-size:14px">Nenhum prato encontrado.</div>';return;}
+  ['Salada','Pasta','Peixe','Carne','Veggie','Sopa','Outros'].forEach(cat=>{
+    if(!grouped[cat])return;
+    const sec=document.createElement('div');sec.className='cat-section';
+    sec.innerHTML=`<div class="cat-title">${CAT_ICO[cat]} ${cat}<span class="cat-n">${grouped[cat].length}</span></div>`;
+    const grid=document.createElement('div');grid.className='rgrid';
+    grouped[cat].forEach(r=>{
+      const el=document.createElement('div');el.className='rcard';
+      const rj=ratingsJ[r.id]||0,rm=ratingsM[r.id]||0;
+      const dots=[1,2,3,4,5].map(d=>`<div class="hdot${d<=r.health?' on':''}"></div>`).join('');
+      const lbls=r.tags.map(t=>`<span class="lbl ${t==='Rápido'?'lbl-r':t==='Domingos'?'lbl-d':t==='Veggie'?'lbl-v':''}">${t}</span>`).join('');
+      el.innerHTML=`<div class="rcard-top"><div class="rname">${r.name}</div><button class="favbtn" onclick="event.stopPropagation();toggleFav(${r.id})">${favs[r.id]?'⭐':'☆'}</button></div>
+        <div class="rlabels">${lbls}<span class="lbl ${LBL_CLS[r.cat]||'lbl-o'}">${r.cat}</span></div>
+        <div class="rmeta"><span class="rmi">⏱ ${r.time}m</span><span class="rmi">🔥 ${r.kcal}kcal</span><div class="hbar">${dots}</div></div>
+        <div class="dual-rating">
+          <div class="dr-row"><span class="dr-label">João</span><div class="stars">${starsHtml(r.id,'J',rj,true)}</div></div>
+          <div class="dr-row"><span class="dr-label">Marta</span><div class="stars">${starsHtml(r.id,'M',rm,true)}</div></div>
+        </div>
+        <button class="add-btn" onclick="event.stopPropagation();openQA(${r.id})">+ Adicionar ao planeador</button>`;
+      el.onclick=()=>openModal(r.id);
+      grid.appendChild(el);
+    });
+    sec.appendChild(grid);container.appendChild(sec);
+  });
+}
+
+function starsHtml(id,who,val,small){
+  return[1,2,3,4,5].map(s=>`<span class="star" onclick="event.stopPropagation();setRat(${id},'${who}',${s})" style="font-size:${small?'11':'17'}px">${s<=val?'★':'☆'}</span>`).join('');
+}
+
+function setRat(id,who,val){
+  if(who==='J')ratingsJ[id]=val;else ratingsM[id]=val;
+  save();renderRecipes();
+  if(currentModalId===id)refreshModalRating(id);
+}
+function refreshModalRating(id){
+  document.getElementById('m-rj').innerHTML=starsHtml(id,'J',ratingsJ[id]||0,false);
+  document.getElementById('m-rm').innerHTML=starsHtml(id,'M',ratingsM[id]||0,false);
+}
+
+function toggleFav(id){favs[id]=!favs[id];save();renderRecipes();}
+
+// MODAL
+function openModal(id){
+  currentModalId=id;
+  const r=RECIPES.find(x=>x.id===id);
+  document.getElementById('m-title').textContent=r.name;
+  const lbls=r.tags.map(t=>`<span class="lbl ${t==='Rápido'?'lbl-r':t==='Domingos'?'lbl-d':t==='Veggie'?'lbl-v':''}">${t}</span>`).join('');
+  document.getElementById('m-labels').innerHTML=lbls+`<span class="lbl ${LBL_CLS[r.cat]||'lbl-o'}">${r.cat}</span>`;
+  const hc=hColor(r.health);
+  document.getElementById('m-health').innerHTML=`<span style="font-size:13px;font-weight:500;color:${hc}">● ${hText(r.health)}</span><div class="hbar-modal"><div class="hfill" style="width:${r.health*20}%;background:${hc}"></div></div><span style="font-size:12px;color:var(--ink3)">${r.health}/5</span>`;
+  refreshModalRating(id);
+  renderRadar(r, compareId?RECIPES.find(x=>x.id===compareId):null);
+  document.getElementById('m-doses').value='2';
+  updateIngredients();
+  document.getElementById('m-nutri').innerHTML=`<div class="nc"><div class="nv">${r.kcal}</div><div class="nl">kcal</div></div><div class="nc"><div class="nv">${r.prot}g</div><div class="nl">proteína</div></div><div class="nc"><div class="nv">${r.carb}g</div><div class="nl">hidratos</div></div><div class="nc"><div class="nv">${r.fat}g</div><div class="nl">gordura</div></div>`;
+  const mainLink=r.link?`<a href="${r.link}" target="_blank" class="rlink">🔗 Continente</a>`:'';
+  const alt=r.link2?`<a href="${r.link2}" target="_blank" class="rlink" style="margin-left:8px;background:var(--grn)">🔗 Pingo Doce</a>`:'';
+  document.getElementById('m-link').innerHTML=mainLink+alt||'<span style="font-size:13px;color:var(--ink3)">Sem link</span>';
+  // compare
+  const cb=document.getElementById('compare-bar'),cg=document.getElementById('compare-grid');
+  if(compareId&&compareId!==id){
+    const cr=RECIPES.find(x=>x.id===compareId);
+    cb.style.display='flex';document.getElementById('cmp-name').textContent=cr.name;
+    cg.style.display='grid';
+    cg.innerHTML=`<div class="compare-col"><div class="compare-col-title">${r.name}</div>${compareTable(r)}</div><div class="compare-col"><div class="compare-col-title">${cr.name}</div>${compareTable(cr)}</div>`;
+  }else{cb.style.display='none';cg.style.display='none';}
+  document.getElementById('rmodal').classList.add('open');
+}
+function compareTable(r){
+  return`<table style="width:100%;font-size:12px"><tr><td style="color:var(--ink3)">kcal</td><td style="text-align:right;font-weight:500">${r.kcal}</td></tr><tr><td style="color:var(--ink3)">Proteína</td><td style="text-align:right;font-weight:500">${r.prot}g</td></tr><tr><td style="color:var(--ink3)">Hidratos</td><td style="text-align:right;font-weight:500">${r.carb}g</td></tr><tr><td style="color:var(--ink3)">Gordura</td><td style="text-align:right;font-weight:500">${r.fat}g</td></tr><tr><td style="color:var(--ink3)">Saúde</td><td style="text-align:right;font-weight:500">${hText(r.health)}</td></tr></table>`;
+}
+function closeModal(){document.getElementById('rmodal').classList.remove('open');}
+function clearCompare(){compareId=null;if(currentModalId)openModal(currentModalId);}
+
+function updateIngredients(){
+  if(!currentModalId)return;
+  const r=RECIPES.find(x=>x.id===currentModalId);
+  const doses=parseInt(document.getElementById('m-doses').value)||2;
+  document.getElementById('m-dose-note').textContent=`(para ${doses} doses)`;
+  document.getElementById('m-ings').innerHTML=r.ing.map(([n,q])=>`<div class="ing-row"><span>${n}</span><span style="color:var(--ink3);font-size:12px">${scaleQty(q,doses)}</span></div>`).join('');
+}
+function scaleQty(q,doses){
+  if(doses===2)return q;
+  const m=doses/2;
+  return q.replace(/(\d+(?:[.,]\d+)?)/g,(num)=>{
+    const v=parseFloat(num.replace(',','.'));
+    const scaled=v*m;
+    return scaled%1===0?scaled.toString():scaled.toFixed(1).replace('.',',');
+  });
+}
+
+// RADAR / HEXAGON
+const RADAR_KEYS=['proteina','carbos','gordura','fibra','vitaminas'];
+const RADAR_LABELS=['Proteína','Carbos','Gordura','Fibra','Vitaminas'];
+function renderRadar(r,r2){
+  const size=140,cx=70,cy=70,maxR=55,sides=5;
+  const pts=i=>{
+    const a=((i/sides)*2*Math.PI)-Math.PI/2;
+    return[cx+maxR*Math.cos(a),cy+maxR*Math.sin(a)];
+  };
+  const datapts=(rec,factor=1)=>RADAR_KEYS.map((k,i)=>{
+    const v=(rec.radar[k]||0)/5*maxR*factor;
+    const a=((i/sides)*2*Math.PI)-Math.PI/2;
+    return[cx+v*Math.cos(a),cy+v*Math.sin(a)];
+  });
+  const polygon=pts2=>`<polygon points="${pts2.map(p=>p.join(',')).join(' ')}"`;
+  let bg='',gridLines='',axes='',axisLabels='';
+  [1,2,3,4,5].forEach(l=>{
+    const g=RADAR_KEYS.map((_,i)=>{const p=pts(i);const r2=l/5*maxR;const a=((i/sides)*2*Math.PI)-Math.PI/2;return[cx+r2*Math.cos(a),cy+r2*Math.sin(a)];});
+    gridLines+=`<polygon points="${g.map(p=>p.join(',')).join(' ')}" fill="none" stroke="rgba(28,25,23,.08)" stroke-width="0.5"/>`;
+  });
+  RADAR_KEYS.forEach((_,i)=>{const[x,y]=pts(i);axes+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(28,25,23,.1)" stroke-width="0.5"/>`;
+    const[lx,ly]=pts(i);const off=12;const la=((i/sides)*2*Math.PI)-Math.PI/2;
+    axisLabels+=`<text x="${cx+(maxR+off)*Math.cos(la)}" y="${cy+(maxR+off)*Math.sin(la)}" text-anchor="middle" dominant-baseline="middle" font-size="8" fill="#78716C">${RADAR_LABELS[i]}</text>`;
+  });
+  const dp=datapts(r);
+  const fill1=`${polygon(dp)} fill="rgba(194,105,42,.3)" stroke="#C2692A" stroke-width="1.5"/>`;
+  let fill2='';
+  if(r2){const dp2=datapts(r2);fill2=`${polygon(dp2)} fill="rgba(74,124,89,.25)" stroke="#4A7C59" stroke-width="1.5"/>`;}
+  const svg=`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${gridLines}${axes}${fill2}${fill1}${axisLabels}</svg>`;
+  let legend=`<div class="radar-labels"><div class="rl-row"><div class="rl-dot" style="background:#C2692A"></div><span>${r.name.substring(0,30)}${r.name.length>30?'…':''}</span></div>`;
+  if(r2)legend+=`<div class="rl-row"><div class="rl-dot" style="background:#4A7C59"></div><span>${r2.name.substring(0,30)}${r2.name.length>30?'…':''}</span></div>`;
+  legend+='</div>';
+  if(!r2){
+    const cmpBtn=`<button class="btn" style="margin-top:6px;font-size:11px" onclick="startCompare(${r.id})">⚖️ Comparar com outro prato</button>`;
+    legend+=cmpBtn;
+  }
+  document.getElementById('m-radar').innerHTML=svg+legend;
+}
+function startCompare(id){compareId=id;closeModal();showToast('Agora clica noutro prato para comparar ⚖️');}
+
+// ===== SITUATIONS =====
+function renderSituations(){
+  const cont=document.getElementById('sug-cats');cont.innerHTML='';
+  SITUATIONS.forEach(s=>{
+    const d=document.createElement('div');d.className='sug-card';
+    const pills=s.ids.slice(0,3).map(id=>{const r=RECIPES.find(x=>x.id===id);return r?`<span class="sug-pill">${r.name.substring(0,20)}…</span>`:''}).join('');
+    d.innerHTML=`<div class="sug-icon">${s.icon}</div><div class="sug-title">${s.title}</div><div class="sug-desc">${s.desc}</div><div class="sug-pills">${pills}</div>`;
+    d.onclick=()=>showSugResults(s);
+    cont.appendChild(d);
+  });
+}
+function showSugResults(s){
+  document.getElementById('sug-cats').style.display='none';
+  document.getElementById('sug-results').style.display='block';
+  document.getElementById('sug-res-title').textContent=s.icon+' '+s.title;
+  const grid=document.getElementById('sug-res-grid');grid.innerHTML='';
+  s.ids.forEach(id=>{
+    const r=RECIPES.find(x=>x.id===id);if(!r)return;
+    const el=document.createElement('div');el.className='rcard';
+    const dots=[1,2,3,4,5].map(d=>`<div class="hdot${d<=r.health?' on':''}"></div>`).join('');
+    el.innerHTML=`<div class="rcard-top"><div class="rname">${r.name}</div><button class="favbtn" onclick="event.stopPropagation();toggleFav(${r.id})">${favs[r.id]?'⭐':'☆'}</button></div>
+      <div class="rlabels"><span class="lbl ${r.tags.includes('Rápido')?'lbl-r':''}">${r.tags[0]||''}</span><span class="lbl ${LBL_CLS[r.cat]||'lbl-o'}">${r.cat}</span></div>
+      <div class="rmeta"><span class="rmi">⏱ ${r.time}m</span><span class="rmi">🔥 ${r.kcal}kcal</span><div class="hbar">${dots}</div></div>
+      <button class="add-btn" onclick="event.stopPropagation();openQA(${r.id})">+ Adicionar ao planeador</button>`;
+    el.onclick=()=>openModal(r.id);
+    grid.appendChild(el);
+  });
+}
+function closeSugResults(){
+  document.getElementById('sug-cats').style.display='';
+  document.getElementById('sug-results').style.display='none';
+}
+
+// ===== PLANNER =====
+function setPlanView(v,btn){
+  planView=v;
+  document.querySelectorAll('.wbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPlanner();
+}
+function setSideFilter(f,btn){
+  sideFilter=f;
+  document.querySelectorAll('.plan-sidebar .chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSidebar();
+}
+function renderSidebar(){
+  const q=document.getElementById('psearch').value.toLowerCase();
+  const list=document.getElementById('pslist');list.innerHTML='';
+  RECIPES.filter(r=>{
+    if(sideFilter==='rapido'&&!r.tags.includes('Rápido'))return false;
+    if(['Salada','Pasta','Peixe','Carne','Veggie','Sopa','Outros'].includes(sideFilter)&&r.cat!==sideFilter)return false;
+    return !q||r.name.toLowerCase().includes(q);
+  }).forEach(r=>{
+    const d=document.createElement('div');d.className='psr';d.draggable=true;
+    d.innerHTML=`<span class="dragh">⠿</span><span>${CAT_ICO[r.cat]} ${r.name}</span>`;
+    d.ondragstart=()=>{draggedId=r.id;d.classList.add('dragging')};
+    d.ondragend=()=>d.classList.remove('dragging');
+    d.onclick=()=>openQA(r.id);
+    list.appendChild(d);
+  });
+}
+function addSpecial(type){
+  const labels={fora:'🍴 Fora',avos:'👴 Avós',restos:'♻️ Restos avós',delivery:'🛵 Delivery'};
+  specialTarget={id:'special:'+type,name:labels[type],type};
+  document.getElementById('qa-title').textContent='Adicionar: '+labels[type];
+  const sel=document.getElementById('qa-day');sel.innerHTML=DAYS.map((d,i)=>`<option value="${i}">${d}</option>`).join('');
+  document.getElementById('qaoverlay').classList.add('open');
+}
+
+function renderPlanner(){
+  const cont=document.getElementById('plan-tables');cont.innerHTML='';
+  const weeks=planView==='both'?[0,1]:planView==='w1'?[0]:[1];
+  weeks.forEach(wi=>{
+    const wrap=document.createElement('div');
+    if(planView==='both')wrap.style.cssText='margin-bottom:1.5rem';
+    const wlabel=document.createElement('div');
+    wlabel.style.cssText='font-family:Fraunces,serif;font-size:16px;font-weight:500;margin-bottom:6px';
+    wlabel.textContent='Semana '+(wi+1);
+    wrap.appendChild(wlabel);
+    const table=document.createElement('table');table.className='plan-table';
+    table.innerHTML='<thead><tr><th style="width:90px">Dia</th><th>☀️ Almoço</th><th>🌙 Jantar</th></tr></thead>';
+    const tbody=document.createElement('tbody');
+    DAYS.forEach((day,di)=>{
+      const tr=document.createElement('tr');
+      if(di===6)tr.className='sun-row';
+      const meals=plan[wi][di];
+      const lunchPills=renderMealPills(meals.lunch,wi,di,'lunch');
+      const dinnerPills=renderMealPills(meals.dinner,wi,di,'dinner');
+      tr.innerHTML=`<td><div class="dcell">${day}</div></td>
+        <td><div class="dz" data-w="${wi}" data-d="${di}" data-m="lunch" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="dropOn(event)">${lunchPills}${!meals.lunch.length?'<div class="dhint">arrastar ou clica +</div>':''}</div></td>
+        <td><div class="dz" data-w="${wi}" data-d="${di}" data-m="dinner" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="dropOn(event)">${dinnerPills}${!meals.dinner.length?'<div class="dhint">arrastar ou clica +</div>':''}</div></td>`;
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);wrap.appendChild(table);cont.appendChild(wrap);
+  });
+}
+function renderMealPills(ids,wi,di,meal){
+  return ids.map((entry,idx)=>{
+    if(typeof entry==='object'&&entry.special){
+      const cls=entry.type==='avos'||entry.type==='restos'?'mpill-avos':'mpill-special';
+      return`<div class="mpill ${cls}"><span class="mpill-name">${entry.name}</span><button class="mpill-rm" onclick="removeMeal(${wi},${di},'${meal}',${idx})">✕</button></div>`;
+    }
+    const r=RECIPES.find(x=>x.id===entry);if(!r)return'';
+    return`<div class="mpill"><span class="mpill-name">${CAT_ICO[r.cat]} ${r.name}</span><button class="mpill-rm" onclick="removeMeal(${wi},${di},'${meal}',${idx})">✕</button></div>`;
+  }).join('');
+}
+function removeMeal(wi,di,meal,idx){plan[wi][di][meal].splice(idx,1);save();renderPlanner();}
+function dropOn(e){
+  e.preventDefault();e.currentTarget.classList.remove('over');
+  const wi=parseInt(e.currentTarget.dataset.w),di=parseInt(e.currentTarget.dataset.d),meal=e.currentTarget.dataset.m;
+  if(draggedId!=null){plan[wi][di][meal].push(draggedId);save();renderPlanner();showToast('Adicionado ✓');}
+  draggedId=null;
+}
+function clearCurrWeeks(){
+  const weeks=planView==='both'?[0,1]:planView==='w1'?[0]:[1];
+  weeks.forEach(wi=>plan[wi]=DAYS.map(()=>({lunch:[],dinner:[]})));
+  save();renderPlanner();
+}
+
+// QUICK ADD
+function openQA(id){
+  qaRecipeId=id;specialTarget=null;
+  const r=RECIPES.find(x=>x.id===id);
+  document.getElementById('qa-title').textContent=r?r.name:'Adicionar';
+  const sel=document.getElementById('qa-day');sel.innerHTML=DAYS.map((d,i)=>`<option value="${i}">${d}</option>`).join('');
+  document.getElementById('qaoverlay').classList.add('open');
+}
+function closeQA(){document.getElementById('qaoverlay').classList.remove('open');qaRecipeId=null;}
+function confirmQA(){
+  const wi=parseInt(document.getElementById('qa-week').value);
+  const di=parseInt(document.getElementById('qa-day').value);
+  const meal=document.getElementById('qa-meal').value;
+  if(specialTarget&&specialTarget.type){
+    plan[wi][di][meal].push({special:true,type:specialTarget.type,name:specialTarget.name});
+  }else if(qaRecipeId!=null){
+    plan[wi][di][meal].push(qaRecipeId);
+  }
+  save();renderPlanner();closeQA();showToast('Adicionado ao plano ✓');
+}
+
+// ===== SHOPPING =====
+function initShopCatSel(){
+  const sel=document.getElementById('shop-cat-sel');
+  sel.innerHTML=SHOP_CATS.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+}
+function rebuildShop(){
+  // collect all recipe ids from plan
+  const allIds=new Set();
+  plan.forEach(w=>w.forEach(d=>{d.lunch.forEach(e=>{if(typeof e==='number')allIds.add(e)});d.dinner.forEach(e=>{if(typeof e==='number')allIds.add(e)});}));
+  allIds.forEach(id=>{
+    const r=RECIPES.find(x=>x.id===id);if(!r)return;
+    r.ing.forEach(([name,,cat])=>{
+      const c=cat||'outros';
+      if(!shopItems[c])shopItems[c]=[];
+      const exists=shopItems[c].some(i=>i.name===name);
+      if(!exists)shopItems[c].push({name,checked:false});
+    });
+  });
+  save();renderShopping();showToast('Lista actualizada da ementa ✓');
+}
+function addShopItem(){
+  const input=document.getElementById('shop-input');
+  const cat=document.getElementById('shop-cat-sel').value;
+  const name=input.value.trim();if(!name)return;
+  if(!shopItems[cat])shopItems[cat]=[];
+  shopItems[cat].push({name,checked:false});
+  input.value='';save();renderShopping();
+}
+function toggleShopItem(cat,idx,el){
+  shopItems[cat][idx].checked=el.checked;save();updateProgress();
+}
+function deleteShopItem(cat,idx){
+  shopItems[cat].splice(idx,1);save();renderShopping();
+}
+function uncheckAll(){
+  Object.keys(shopItems).forEach(c=>shopItems[c].forEach(i=>i.checked=false));
+  save();renderShopping();
+}
+function removeChecked(){
+  Object.keys(shopItems).forEach(c=>shopItems[c]=shopItems[c].filter(i=>!i.checked));
+  save();renderShopping();
+}
+function updateProgress(){
+  let total=0,done=0;
+  Object.keys(shopItems).forEach(c=>shopItems[c].forEach(i=>{total++;if(i.checked)done++;}));
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('prog-fill').style.width=pct+'%';
+}
+function renderShopping(){
+  const grid=document.getElementById('shop-grid');grid.innerHTML='';
+  let hasAny=false;
+  SHOP_CATS.forEach(sc=>{
+    const items=shopItems[sc.id]||[];
+    const div=document.createElement('div');div.className='shop-cat';
+    const done=items.filter(i=>i.checked).length;
+    div.innerHTML=`<div class="shop-cat-hdr"><div class="shop-cat-label">${sc.name}<span class="shop-cat-num">${done}/${items.length}</span></div></div>`;
+    items.forEach((item,idx)=>{
+      hasAny=true;
+      const row=document.createElement('div');row.className='srow';
+      row.innerHTML=`<input type="checkbox" class="shop-checkbox" ${item.checked?'checked':''} onchange="shopItems['${sc.id}'][${idx}].checked=this.checked;save();updateProgress();this.closest('.srow').querySelector('.srow-name').classList.toggle('done',this.checked)">
+        <span class="srow-name${item.checked?' done':''}">${item.name}</span>
+        <button class="srow-del" onclick="deleteShopItem('${sc.id}',${idx});renderShopping()">✕</button>`;
+      div.appendChild(row);
+    });
+    if(items.length===0){
+      const empty=document.createElement('div');empty.style.cssText='font-size:11px;color:var(--ink3);padding:4px 0';empty.textContent='Vazio';div.appendChild(empty);
+    }
+    grid.appendChild(div);
+  });
+  if(!hasAny){const e=document.createElement('div');e.className='shop-empty';e.textContent='Lista vazia. Vai ao planeador e clica "Actualizar da ementa", ou adiciona manualmente.';grid.appendChild(e);}
+  updateProgress();
+}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+
+
+// ── FIREBASE CONFIG ──────────────────────────────────────────
+const FB_URL='https://menu-semanal-d2bd0-default-rtdb.europe-west1.firebasedatabase.app';
+
+async function fbGet(path){
+  try{
+    const r=await fetch(FB_URL+path+'.json',{signal:AbortSignal.timeout(8000)});
+    if(!r.ok)return null;
+    const data=await r.json();
+    setOnline(true);return data;
+  }catch(e){setOnline(false);return null;}
+}
+async function fbSet(path,data){
+  try{localStorage.setItem('ementa_bkp',JSON.stringify(data));}catch(e){}
+  try{
+    const r=await fetch(FB_URL+path+'.json',{
+      method:'PUT',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(data),signal:AbortSignal.timeout(8000)
+    });
+    if(r.ok)setOnline(true);else setOnline(false);
+  }catch(e){setOnline(false);}
+}
+function fbListen(path,cb){
+  let lastVal=null;
+  const poll=async()=>{
+    const val=await fbGet(path);
+    const str=JSON.stringify(val);
+    if(str!==lastVal){lastVal=str;if(val!==null)cb(val);}
+  };
+  poll();setInterval(poll,8000);
+}
+function setOnline(on){
+  const b=document.getElementById('sync-badge');if(!b)return;
+  if(on){b.textContent='Sincronizado';b.style.color='#4A7C59';b.style.opacity='1';setTimeout(()=>b.style.opacity='0',2500);}
+  else{b.textContent='Offline';b.style.color='#D4860B';b.style.opacity='1';}
+}
+function toArr(v){
+  if(!v)return[];
+  if(Array.isArray(v))return v;
+  return Object.keys(v).sort((a,b)=>+a-+b).map(k=>v[k]);
+}
+
+// ── STATE ─────────────────────────────────────────────────────
+let rFilter='all';
+let favs={}, ratingsJ={}, ratingsM={};
+let userRecipes=[];
+let plan=[0,1].map(()=>DAYS.map(()=>({lunch:[],dinner:[]})));
+let shopItems={};
+SHOP_CATS.forEach(c=>{shopItems[c.id]=[];});
+let staples=[];
+let planView='both', sideFilter='all';
+let draggedRecipe=null, draggedSpecial=null;
+let currentModalId=null, compareId=null;
+let currentQuickRecipeId=null, qaSpecial=null;
+let editingId=null;
+let _syncPause=false;
+
+function allRecipes(){return[...BASE_RECIPES,...userRecipes];}
+function findR(id){return allRecipes().find(r=>r.id===id);}
+
+// Save to Firebase (debounced)
+let _svTimer=null;
+function sv(){
+  clearTimeout(_svTimer);
+  _svTimer=setTimeout(async()=>{
+    _syncPause=true;
+    await fbSet('/data',{favs,ratingsJ,ratingsM,userRecipes,plan,shopItems,staples});
+    setTimeout(()=>_syncPause=false,1500);
+  },600);
+}
+
+function applyRemoteData(d){
+  if(!d)return;
+  if(d.favs)favs=d.favs;
+  if(d.ratingsJ)ratingsJ=d.ratingsJ;
+  if(d.ratingsM)ratingsM=d.ratingsM;
+  if(d.userRecipes)userRecipes=toArr(d.userRecipes);
+  if(d.staples)staples=toArr(d.staples);
+  if(d.plan){
+    plan=[0,1].map(wi=>{
+      const week=d.plan[wi]||{};
+      return DAYS.map((_,di)=>{
+        const day=(Array.isArray(week)?week[di]:week[di])||{};
+        return{lunch:toArr(day.lunch),dinner:toArr(day.dinner)};
+      });
+    });
+  }
+  if(d.shopItems){
+    shopItems={};
+    SHOP_CATS.forEach(sc=>{shopItems[sc.id]=toArr(d.shopItems[sc.id]);});
+  }
+}
+
+async function loadFromFirebase(){
+  let data=await fbGet('/data');
+  if(!data){
+    try{const bkp=localStorage.getItem('ementa_bkp');if(bkp){data=JSON.parse(bkp);}}catch(e){}
+  }
+  if(data)applyRemoteData(data);
+  fbListen('/data',remote=>{
+    if(_syncPause)return;
+    applyRemoteData(remote);
+    renderRecipes();renderPlanner();renderShopping();
+    const b=document.getElementById('sync-badge');
+    if(b){b.textContent='Sincronizado';b.style.color='#4A7C59';b.style.opacity='1';setTimeout(()=>b.style.opacity='0',2500);}
+  });
+}
+
+// Custom mobile confirm (no browser confirm())
+let _confirmResolve=null;
+function confirmDialog(msg,danger=true){
+  return new Promise(res=>{
+    _confirmResolve=res;
+    document.getElementById('confirm-msg').textContent=msg;
+    document.getElementById('confirm-ok').style.background=danger?'#B83232':'#C2692A';
+    document.getElementById('confirm-overlay').style.display='flex';
+  });
+}
+function confirmResolve(val){
+  document.getElementById('confirm-overlay').style.display='none';
+  if(_confirmResolve){_confirmResolve(val);_confirmResolve=null;}
+}
+
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+// INIT
+// Generate PNG icon for iOS via canvas
+(function(){
+  try{
+    var cv=document.createElement('canvas');cv.width=180;cv.height=180;
+    var ctx=cv.getContext('2d');
+    var r2=36,s=180;
+    ctx.beginPath();ctx.moveTo(r2,0);ctx.lineTo(s-r2,0);
+    ctx.quadraticCurveTo(s,0,s,r2);ctx.lineTo(s,s-r2);
+    ctx.quadraticCurveTo(s,s,s-r2,s);ctx.lineTo(r2,s);
+    ctx.quadraticCurveTo(0,s,0,s-r2);ctx.lineTo(0,r2);
+    ctx.quadraticCurveTo(0,0,r2,0);ctx.closePath();
+    ctx.fillStyle='#C2692A';ctx.fill();
+    ctx.font='90px system-ui,Apple Color Emoji,serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('\uD83C\uDF7D',90,96);
+    var png=cv.toDataURL('image/png');
+    var li=document.createElement('link');li.rel='apple-touch-icon';li.href=png;document.head.appendChild(li);
+    var fi=document.createElement('link');fi.rel='icon';fi.type='image/png';fi.href=png;document.head.appendChild(fi);
+  }catch(e){}
+})();
+
+initShopCatSel();
+loadFromFirebase().then(()=>{
+  renderRecipes();renderPlanner();renderShopping();
+  const ld=document.getElementById('fb-loading');if(ld)ld.style.display='none';
+}).catch(()=>{
+  renderRecipes();renderPlanner();renderShopping();
+  const ld=document.getElementById('fb-loading');if(ld)ld.style.display='none';
+});
+
+</script>
+</body>
+</html>
