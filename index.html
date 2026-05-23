@@ -822,7 +822,7 @@ function renderRecipes(){
         <div style="display:flex;gap:4px;margin-top:2px">
           <button class="add-btn" style="flex:1" onclick="event.stopPropagation();openQA(${r.id})">+ Planeador</button>
           <button class="add-btn" style="background:var(--cream);color:var(--ink-muted,#78716C);border:1px solid rgba(28,25,23,.15);flex:0 0 32px" onclick="event.stopPropagation();openEditForm(${r.id})">✏️</button>
-        </div>\`;
+        </div>`;
       el.onclick=()=>openModal(r.id);
       grid.appendChild(el);
     });
