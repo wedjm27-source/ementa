@@ -161,7 +161,17 @@ nav{background:var(--warm);border-bottom:1px solid var(--brd);position:sticky;to
 .planner-wrap{display:flex;gap:16px}
 .plan-sidebar{width:230px;flex-shrink:0;background:var(--warm);border:1px solid var(--brd);
   border-radius:var(--r);padding:.9rem;position:sticky;top:70px;max-height:calc(100vh - 90px);
-  display:flex;flex-direction:column;gap:8px}
+  display:flex;flex-direction:column;gap:8px;overflow:hidden}
+@media(max-width:700px){
+  .planner-wrap{flex-direction:column}
+  .plan-sidebar{width:100%;max-height:220px;position:relative;top:0;flex-direction:column}
+  .sidebar-recipes{max-height:120px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .plan-main{width:100%;overflow-x:auto}
+  .ptable{min-width:500px}
+  .view{padding:.75rem}
+  nav{gap:2px}
+  .ntab{padding:4px 8px;font-size:12px}
+}
 .plan-sidebar-title{font-family:'Fraunces',serif;font-size:15px;color:var(--ink)}
 .psbox{width:100%;padding:6px 9px;border-radius:var(--rs);border:1px solid var(--brd2);
   background:var(--cream);font-size:12px;color:var(--ink);outline:none}
@@ -195,6 +205,8 @@ nav{background:var(--warm);border-bottom:1px solid var(--brd);position:sticky;to
 .mpill{background:var(--cream);border:1px solid var(--brd);border-radius:var(--rs);
   padding:4px 7px;font-size:10px;display:flex;align-items:center;gap:3px;justify-content:space-between}
 .mpill-special{background:var(--pur-l);border-color:var(--pur)}
+.mpill-avos{background:var(--blu-l);border-color:var(--blu)}
+.mpill-res{background:var(--amb-l);border-color:var(--amb)}
 .mpill-avos{background:var(--blu-l);border-color:var(--blu)}
 .mpill-name{flex:1;line-height:1.3}
 .mpill-rm{background:none;border:none;color:var(--ink3);font-size:13px;padding:0;line-height:1;flex-shrink:0}
@@ -349,6 +361,7 @@ nav{background:var(--warm);border-bottom:1px solid var(--brd);position:sticky;to
 <div class="view active" id="view-recipes">
   <div class="toolbar">
     <input class="sbox" type="text" placeholder="🔍 Pesquisar receitas..." oninput="renderRecipes()" id="rsearch">
+    <button class="btn btn-p" onclick="openNewForm()" style="white-space:nowrap;font-size:12px;padding:6px 12px">+ Novo prato</button>
     <div class="chips" id="filter-chips">
       <button class="chip active" onclick="setFilter('all',this)">Todos</button>
       <button class="chip" onclick="setFilter('Salada',this)">🥗 Saladas</button>
@@ -399,10 +412,12 @@ nav{background:var(--warm);border-bottom:1px solid var(--brd);position:sticky;to
       <div style="border-top:1px solid var(--brd);padding-top:8px">
         <div style="font-size:11px;color:var(--ink3);margin-bottom:5px;font-weight:500">Especiais</div>
         <div style="display:flex;flex-direction:column;gap:3px">
-          <button class="psr" style="cursor:pointer" onclick="addSpecial('fora')">🍴 Almoço/Jantar fora</button>
-          <button class="psr" style="cursor:pointer" onclick="addSpecial('avos')">👴 Jantar avós</button>
-          <button class="psr" style="cursor:pointer" onclick="addSpecial('restos')">♻️ Restos avós</button>
-          <button class="psr" style="cursor:pointer" onclick="addSpecial('delivery')">🛵 Delivery</button>
+          <div class="psr" draggable="true" id="sp-fora" ondragstart="dragSpecial('fora')" onclick="addSpecial('fora')">⠿ 🍴 Almoço/Jantar fora</div>
+          <div class="psr" draggable="true" id="sp-avos" ondragstart="dragSpecial('avos')" onclick="addSpecial('avos')">⠿ 👴 Jantar avós</div>
+          <div class="psr" draggable="true" id="sp-restos" ondragstart="dragSpecial('restos')" onclick="addSpecial('restos')">⠿ ♻️ Restos avós</div>
+          <div class="psr" draggable="true" id="sp-restos-dom" ondragstart="dragSpecial('restos-dom')" onclick="addSpecial('restos-dom')">⠿ ♻️ Restos domingo</div>
+          <div class="psr" draggable="true" id="sp-delivery" ondragstart="dragSpecial('delivery')" onclick="addSpecial('delivery')">⠿ 🛵 Delivery</div>
+          <div class="psr" style="cursor:pointer" onclick="openCustomMeal()">⠿ ✏️ Refeição personalizada</div>
         </div>
       </div>
     </div>
@@ -773,7 +788,7 @@ function renderRecipes(){
   const cats=rFilter==='all'?Object.keys(CAT_ICO):rFilter==='rapido'?null:rFilter==='fav'?null:[rFilter];
   const container=document.getElementById('rcontainer');container.innerHTML='';
   const grouped={};
-  RECIPES.forEach(r=>{
+  allRecipes().forEach(r=>{
     if(rFilter==='fav'&&!favs[r.id])return;
     if(rFilter==='rapido'&&!r.tags.includes('Rápido'))return;
     if(cats&&!cats.includes(r.cat))return;
@@ -799,7 +814,10 @@ function renderRecipes(){
           <div class="dr-row"><span class="dr-label">João</span><div class="stars">${starsHtml(r.id,'J',rj,true)}</div></div>
           <div class="dr-row"><span class="dr-label">Marta</span><div class="stars">${starsHtml(r.id,'M',rm,true)}</div></div>
         </div>
-        <button class="add-btn" onclick="event.stopPropagation();openQA(${r.id})">+ Adicionar ao planeador</button>`;
+        <div style="display:flex;gap:4px;margin-top:2px">
+          <button class="add-btn" style="flex:1" onclick="event.stopPropagation();openQA(${r.id})">+ Planeador</button>
+          <button class="add-btn" style="background:var(--cream);color:var(--ink-muted,#78716C);border:1px solid rgba(28,25,23,.15);flex:0 0 32px" onclick="event.stopPropagation();openEditForm(${r.id})">✏️</button>
+        </div>\`;
       el.onclick=()=>openModal(r.id);
       grid.appendChild(el);
     });
@@ -975,12 +993,26 @@ function renderSidebar(){
     list.appendChild(d);
   });
 }
+const SPECIAL_LABELS={fora:'🍴 Fora',avos:'👴 Avós',restos:'♻️ Restos avós','restos-dom':'♻️ Restos domingo',delivery:'🛵 Delivery'};
+let draggedSpecial=null;
+function dragSpecial(type){draggedSpecial=type;draggedId=null;}
 function addSpecial(type){
-  const labels={fora:'🍴 Fora',avos:'👴 Avós',restos:'♻️ Restos avós',delivery:'🛵 Delivery'};
-  specialTarget={id:'special:'+type,name:labels[type],type};
-  document.getElementById('qa-title').textContent='Adicionar: '+labels[type];
+  const label=SPECIAL_LABELS[type]||type;
+  specialTarget={id:'special:'+type,name:label,type};
+  document.getElementById('qa-title').textContent='Adicionar: '+label;
   const sel=document.getElementById('qa-day');sel.innerHTML=DAYS.map((d,i)=>`<option value="${i}">${d}</option>`).join('');
   document.getElementById('qaoverlay').classList.add('open');
+}
+function openCustomMeal(){
+  document.getElementById('cust-day').innerHTML=DAYS.map((d,i)=>`<option value="${i}">${d}</option>`).join('');
+  document.getElementById('custoverlay').classList.add('open');
+}
+function closeCust(){document.getElementById('custoverlay').classList.remove('open');}
+function confirmCust(){
+  const name=document.getElementById('cust-name').value.trim();if(!name)return;
+  const wi=+document.getElementById('cust-week').value,di=+document.getElementById('cust-day').value,meal=document.getElementById('cust-meal').value;
+  plan[wi][di][meal].push({special:true,type:'custom',name:'✏️ '+name});
+  save();renderPlanner();closeCust();showToast('Refeição adicionada ✓');
 }
 
 function renderPlanner(){
@@ -1013,11 +1045,11 @@ function renderPlanner(){
 function renderMealPills(ids,wi,di,meal){
   return ids.map((entry,idx)=>{
     if(typeof entry==='object'&&entry.special){
-      const cls=entry.type==='avos'||entry.type==='restos'?'mpill-avos':'mpill-special';
+      const cls=entry.type==='avos'?'mpill-avos':entry.type==='restos'||entry.type==='restos-dom'?'mpill-res':'mpill-special';
       return`<div class="mpill ${cls}"><span class="mpill-name">${entry.name}</span><button class="mpill-rm" onclick="removeMeal(${wi},${di},'${meal}',${idx})">✕</button></div>`;
     }
-    const r=RECIPES.find(x=>x.id===entry);if(!r)return'';
-    return`<div class="mpill"><span class="mpill-name">${CAT_ICO[r.cat]} ${r.name}</span><button class="mpill-rm" onclick="removeMeal(${wi},${di},'${meal}',${idx})">✕</button></div>`;
+    const r=allRecipes().find(x=>x.id===entry);if(!r)return'';
+    return`<div class="mpill"><span class="mpill-name">${CAT_ICO[r.cat]||''} ${r.name}</span><button class="mpill-rm" onclick="removeMeal(${wi},${di},'${meal}',${idx})">✕</button></div>`;
   }).join('');
 }
 function removeMeal(wi,di,meal,idx){plan[wi][di][meal].splice(idx,1);save();renderPlanner();}
@@ -1131,6 +1163,149 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 
 
 
+
+// ── FORM: criar / editar pratos ──────────────────────────────
+let ingRows=[];
+let userRecipes=JSON.parse(localStorage.getItem('userRecipes3')||'[]');
+
+function openNewForm(){
+  editingId=null;ingRows=[];
+  document.getElementById('f-title').textContent='Novo Prato';
+  document.getElementById('f-id').value='';
+  document.getElementById('f-name').value='';
+  document.getElementById('f-cat').value='Carne';
+  document.getElementById('f-time').value='';
+  document.getElementById('ft-rapido').checked=false;
+  document.getElementById('ft-domingos').checked=false;
+  document.getElementById('ft-veggie').checked=false;
+  document.getElementById('f-health').value=3;document.getElementById('f-health-val').textContent='3';
+  ['kcal','prot','carb','fat'].forEach(k=>{const el=document.getElementById('f-'+k);if(el)el.value='';});
+  document.getElementById('f-insight').value='';
+  document.getElementById('f-link1').value='';
+  document.getElementById('f-del-btn').style.display='none';
+  renderIngEditor();
+  document.getElementById('fmodal').classList.add('open');
+}
+function openEditForm(id){
+  const r=RECIPES.find(x=>x.id===id)||userRecipes.find(x=>x.id===id);if(!r)return;
+  editingId=id;
+  ingRows=(r.ing||[]).map(a=>[...a]);
+  document.getElementById('f-title').textContent='Editar Prato';
+  document.getElementById('f-name').value=r.name;
+  document.getElementById('f-cat').value=r.cat;
+  document.getElementById('f-time').value=r.time||'';
+  document.getElementById('ft-rapido').checked=(r.tags||[]).includes('Rápido');
+  document.getElementById('ft-domingos').checked=(r.tags||[]).includes('Domingos');
+  document.getElementById('ft-veggie').checked=(r.tags||[]).includes('Veggie');
+  document.getElementById('f-health').value=r.health||3;
+  document.getElementById('f-health-val').textContent=r.health||3;
+  ['kcal','prot','carb','fat'].forEach(k=>{const el=document.getElementById('f-'+k);if(el)el.value=r[k]||'';});
+  document.getElementById('f-insight').value=r.insight||'';
+  document.getElementById('f-link1').value=r.link||'';
+  document.getElementById('f-del-btn').style.display=userRecipes.find(x=>x.id===id)?'inline-flex':'none';
+  renderIngEditor();
+  document.getElementById('fmodal').classList.add('open');
+}
+function closeFModal(){document.getElementById('fmodal').classList.remove('open');}
+function renderIngEditor(){
+  const ed=document.getElementById('ing-editor');if(!ed)return;ed.innerHTML='';
+  ingRows.forEach((row,i)=>{
+    const d=document.createElement('div');
+    d.style.cssText='display:flex;gap:5px;align-items:center';
+    d.innerHTML=`<input value="${row[0]||''}" placeholder="Nome" style="flex:1;padding:5px 7px;border-radius:5px;border:1px solid rgba(28,25,23,.18);background:var(--cream);font-size:12px;outline:none" oninput="ingRows[${i}][0]=this.value">
+      <input value="${row[1]||''}" placeholder="Qtd" style="width:80px;padding:5px 7px;border-radius:5px;border:1px solid rgba(28,25,23,.18);background:var(--cream);font-size:12px;outline:none" oninput="ingRows[${i}][1]=this.value">
+      <button onclick="ingRows.splice(${i},1);renderIngEditor()" style="background:none;border:none;color:#78716C;font-size:14px;cursor:pointer;padding:0 3px">✕</button>`;
+    ed.appendChild(d);
+  });
+}
+function addIngRow(){ingRows.push(['','']);renderIngEditor();}
+function saveForm(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){alert('Nome obrigatório');return;}
+  const tags=[];
+  if(document.getElementById('ft-rapido').checked)tags.push('Rápido');
+  if(document.getElementById('ft-domingos').checked)tags.push('Domingos');
+  if(document.getElementById('ft-veggie').checked)tags.push('Veggie');
+  const rec={
+    id:editingId||Date.now(),name,cat:document.getElementById('f-cat').value,tags,
+    time:+document.getElementById('f-time').value||20,
+    health:+document.getElementById('f-health').value||3,
+    kcal:+document.getElementById('f-kcal').value||0,
+    prot:+document.getElementById('f-prot').value||0,
+    carb:+document.getElementById('f-carb').value||0,
+    fat:+document.getElementById('f-fat').value||0,
+    insight:document.getElementById('f-insight').value,
+    link:document.getElementById('f-link1').value,
+    ing:ingRows.filter(r=>r[0]),similar:[],userCreated:true,
+  };
+  if(editingId){
+    const ui=userRecipes.findIndex(r=>r.id===editingId);
+    if(ui>=0)userRecipes[ui]=rec;else userRecipes.push(rec);
+  }else{userRecipes.push(rec);}
+  localStorage.setItem('userRecipes3',JSON.stringify(userRecipes));
+  save();closeFModal();renderRecipes();showToast(editingId?'Prato actualizado ✓':'Prato criado ✓');
+}
+async function deleteFormRecipe(){
+  if(!editingId)return;
+  if(!await confirmDialog('Eliminar este prato?'))return;
+  userRecipes=userRecipes.filter(r=>r.id!==editingId);
+  localStorage.setItem('userRecipes3',JSON.stringify(userRecipes));
+  save();closeFModal();renderRecipes();showToast('Prato eliminado.');
+}
+async function deleteRecipeFromModal(id){
+  if(!await confirmDialog('Eliminar este prato?'))return;
+  userRecipes=userRecipes.filter(r=>r.id!==id);
+  localStorage.setItem('userRecipes3',JSON.stringify(userRecipes));
+  save();closeModal();renderRecipes();showToast('Eliminado.');
+}
+
+
+// ── MOBILE TOUCH DRAG ─────────────────────────────────────────
+function addTouchDrag(el, getPayload){
+  let clone=null;
+  el.addEventListener('touchstart',e=>{
+    const t=e.touches[0];
+    clone=el.cloneNode(true);
+    clone.style.cssText='position:fixed;opacity:.85;pointer-events:none;z-index:999;'+
+      'left:'+(t.clientX-80)+'px;top:'+(t.clientY-15)+'px;width:180px;font-size:11px;'+
+      'background:var(--acc-l);border:1px solid var(--acc);border-radius:6px;padding:5px 8px;color:var(--acc-d)';
+    document.body.appendChild(clone);
+  },{passive:true});
+  el.addEventListener('touchmove',e=>{
+    const t=e.touches[0];
+    if(clone){clone.style.left=(t.clientX-80)+'px';clone.style.top=(t.clientY-15)+'px';}
+    e.preventDefault();
+  },{passive:false});
+  el.addEventListener('touchend',e=>{
+    if(clone){clone.remove();clone=null;}
+    const t=e.changedTouches[0];
+    const target=document.elementFromPoint(t.clientX,t.clientY);
+    const dz=target?target.closest('.meal-drop-zone'):null;
+    if(dz){
+      const wi=+dz.dataset.w,di=+dz.dataset.d,meal=dz.dataset.m;
+      const payload=getPayload();
+      if(payload!=null){
+        if(typeof payload==='object')plan[wi][di][meal].push(payload);
+        else plan[wi][di][meal].push(payload);
+        save();renderPlanner();showToast('Adicionado ✓');
+      }
+    }
+  },{passive:true});
+}
+
+function applyTouchDragToSidebar(){
+  document.querySelectorAll('#sidebar-recipes-list .sidebar-recipe').forEach(el=>{
+    const id=+el.dataset.rid;
+    if(!id)return;
+    addTouchDrag(el,()=>id);
+  });
+  ['sp-fora','sp-avos','sp-restos','sp-restos-dom','sp-delivery'].forEach(spId=>{
+    const el=document.getElementById(spId);if(!el)return;
+    const typeMap={'sp-fora':'fora','sp-avos':'avos','sp-restos':'restos','sp-restos-dom':'restos-dom','sp-delivery':'delivery'};
+    const type=typeMap[spId];
+    addTouchDrag(el,()=>({special:true,type,name:SPECIAL_LABELS[type]}));
+  });
+}
 // ── FIREBASE CONFIG ──────────────────────────────────────────
 const FB_URL='https://menu-semanal-d2bd0-default-rtdb.europe-west1.firebasedatabase.app';
 
@@ -1278,6 +1453,10 @@ function showToast(m){const t=document.getElementById('toast');t.textContent=m;t
 })();
 
 initShopCatSel();
+// Override renderSidebar to reapply touch drag after each render
+const _origRenderSidebar=renderSidebar;
+renderSidebar=function(){_origRenderSidebar();setTimeout(applyTouchDragToSidebar,100);};
+
 loadFromFirebase().then(()=>{
   renderRecipes();renderPlanner();renderShopping();
   const ld=document.getElementById('fb-loading');if(ld)ld.style.display='none';
@@ -1287,5 +1466,94 @@ loadFromFirebase().then(()=>{
 });
 
 </script>
+
+<!-- FORM MODAL: criar/editar prato -->
+<div class="overlay" id="fmodal" onclick="if(event.target===this)closeFModal()">
+<div class="modal" style="max-width:560px">
+  <div class="mhead" style="position:relative">
+    <button class="mclose" onclick="closeFModal()">✕</button>
+    <div class="mtitle" id="f-title">Novo Prato</div>
+  </div>
+  <div class="mbody">
+    <input type="hidden" id="f-id">
+    <div class="msec">
+      <label style="font-size:12px;color:var(--ink3);display:block;margin-bottom:3px">Nome do prato</label>
+      <input class="finput" id="f-name" type="text" placeholder="Ex: Frango grelhado com legumes" style="width:100%;padding:7px 10px;border-radius:6px;border:1px solid rgba(28,25,23,.2);background:var(--cream);font-size:13px;outline:none">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.85rem">
+      <div>
+        <label style="font-size:12px;color:var(--ink3);display:block;margin-bottom:3px">Categoria</label>
+        <select class="finput" id="f-cat" style="width:100%;padding:7px 10px;border-radius:6px;border:1px solid rgba(28,25,23,.2);background:var(--cream);font-size:13px;outline:none">
+          <option>Salada</option><option>Pasta</option><option>Peixe</option>
+          <option>Carne</option><option>Veggie</option><option>Sopa</option><option>Outros</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--ink3);display:block;margin-bottom:3px">Tempo (min)</label>
+        <input class="finput" id="f-time" type="number" placeholder="20" style="width:100%;padding:7px 10px;border-radius:6px;border:1px solid rgba(28,25,23,.2);background:var(--cream);font-size:13px;outline:none">
+      </div>
+    </div>
+    <div style="margin-bottom:.85rem">
+      <label style="font-size:12px;color:var(--ink3);display:block;margin-bottom:4px">Tags</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:4px;font-size:13px"><input type="checkbox" id="ft-rapido"> Rápido</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:13px"><input type="checkbox" id="ft-domingos"> Domingos</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:13px"><input type="checkbox" id="ft-veggie"> Veggie</label>
+      </div>
+    </div>
+    <div style="margin-bottom:.85rem">
+      <label style="font-size:12px;color:var(--ink3);display:block;margin-bottom:3px">Nível de saúde (1–5)</label>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input id="f-health" type="range" min="1" max="5" step="1" value="3" style="flex:1" oninput="document.getElementById('f-health-val').textContent=this.value">
+        <span id="f-health-val" style="font-size:13px;color:var(--ink3);min-width:12px">3</span>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:.85rem">
+      <div><label style="font-size:11px;color:var(--ink3)">kcal</label><input id="f-kcal" type="number" placeholder="400" style="width:100%;padding:5px 7px;border-radius:5px;border:1px solid rgba(28,25,23,.2);background:var(--cream);font-size:12px;outline:none"></div>
+      <div><label style="font-size:11px;color:var(--ink3)">Proteína g</label><input id="f-prot" type="number" placeholder="25" style="width:100%;padding:5px 7px;border-radius:5px;border:1px solid rgba(28,25,23,.2);background:var(--cream);font-size:12px;outline:none"></div>
+      <div><label style="font-size:11px;color:var(--ink3)">Hidratos g</label><input id="f-carb" type="number" placeholder="40" style="width:100%;padding:5px 7px;border-radius:5px;border:1px solid rgba(28,25,23,.2);background:var(--cream);font-size:12px;outline:none"></div>
+      <div><label style="font-size:11px;color:var(--ink3)">Gordura g</label><input id="f-fat" type="number" placeholder="12" style="width:100%;padding:5px 7px;border-radius:5px;border:1px solid rgba(28,25,23,.2);background:var(--cream);font-size:12px;outline:none"></div>
+    </div>
+    <div style="margin-bottom:.85rem">
+      <label style="font-size:12px;color:var(--ink3);display:block;margin-bottom:3px">Dica / Variação</label>
+      <textarea id="f-insight" rows="2" placeholder="Ex: Podes substituir frango por tofu..." style="width:100%;padding:7px 10px;border-radius:6px;border:1px solid rgba(28,25,23,.2);background:var(--cream);font-size:13px;outline:none;resize:vertical;font-family:inherit"></textarea>
+    </div>
+    <div style="margin-bottom:.85rem">
+      <label style="font-size:12px;color:var(--ink3);display:block;margin-bottom:3px">Link receita (Continente)</label>
+      <input id="f-link1" type="url" placeholder="https://feed.continente.pt/receitas/..." style="width:100%;padding:7px 10px;border-radius:6px;border:1px solid rgba(28,25,23,.2);background:var(--cream);font-size:13px;outline:none">
+    </div>
+    <div style="margin-bottom:.85rem">
+      <label style="font-size:12px;color:var(--ink3);display:block;margin-bottom:3px">Ingredientes</label>
+      <div id="ing-editor" style="display:flex;flex-direction:column;gap:4px"></div>
+      <button onclick="addIngRow()" style="margin-top:5px;font-size:12px;color:var(--acc);background:none;border:1px dashed var(--acc);border-radius:6px;padding:4px 8px;cursor:pointer">+ Ingrediente</button>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
+      <button class="btn" onclick="closeFModal()">Cancelar</button>
+      <button class="btn btn-red" id="f-del-btn" onclick="deleteFormRecipe()" style="display:none;background:var(--red-l);color:var(--red);border-color:var(--red)">🗑 Eliminar</button>
+      <button class="btn btn-p" onclick="saveForm()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- CUSTOM MEAL MODAL -->
+<div class="qa-overlay" id="custoverlay">
+<div class="qa-modal">
+  <h3 style="font-family:Georgia,serif;font-size:16px;margin-bottom:.85rem">Refeição personalizada</h3>
+  <label style="font-size:11px;display:block;margin-bottom:3px">Nome</label>
+  <input id="cust-name" type="text" placeholder="Ex: Jantar especial..." style="width:100%;padding:6px 9px;border-radius:6px;border:1px solid rgba(28,25,23,.2);background:var(--cream);font-size:13px;margin-bottom:7px;outline:none">
+  <label style="font-size:11px;display:block;margin-bottom:3px">Semana</label>
+  <select id="cust-week"><option value="0">Semana 1</option><option value="1">Semana 2</option></select>
+  <label style="font-size:11px;display:block;margin-bottom:3px">Dia</label>
+  <select id="cust-day"></select>
+  <label style="font-size:11px;display:block;margin-bottom:3px">Refeição</label>
+  <select id="cust-meal"><option value="lunch">Almoço</option><option value="dinner">Jantar</option></select>
+  <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:.85rem">
+    <button class="btn" onclick="closeCust()">Cancelar</button>
+    <button class="btn btn-p" onclick="confirmCust()">Adicionar</button>
+  </div>
+</div>
+</div>
+
 </body>
 </html>
